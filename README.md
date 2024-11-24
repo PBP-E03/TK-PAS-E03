@@ -21,7 +21,8 @@ Tahap I (20%)
 # Steve Mobile
 
 ## **Deskripsi Proyek**
-**Steve Mobile** adalah aplikasi mobile yang membantu pengguna menemukan dan memilih steakhouse terbaik di Jakarta. Aplikasi ini menyediakan fitur-fitur seperti pencarian steakhouse, akses ke informasi penting (menu spesial, jam operasional, lokasi, dan harga), ulasan dan rating, forum diskusi, wishlist, serta reservasi online. Dengan antarmuka yang ramah pengguna dan fitur yang lengkap, **Steve Mobile** menjadi solusi ideal bagi pecinta steak di Jakarta.
+**Steve Mobile** adalah sebuah aplikasi yang dirancang untuk membantu pengguna menemukan dan memilih steakhouse terbaik di Jakarta. Melalui aplikasi ini, Pengguna dapat mencari steakhouse berdasarkan nama restoran serta mengakses informasi penting seperti menu spesial, jam operasional, lokasi, dan harga menu. Selain itu, Steve Mobile memungkinkan pengguna untuk membaca dan menulis ulasan, berdiskusi dengan komunitas pecinta steak di forum, serta melakukan reservasi langsung ke steakhouse pilihan mereka dengan mudah. Dengan antarmuka yang ramah pengguna dan fitur yang lengkap, **Steve Mobile** menjadi pendamping terbaik bagi para penggemar steak di Jakarta.
+
 
 ---
 
@@ -36,66 +37,78 @@ Tahap I (20%)
 
 ## **Modul yang Diimplementasikan**
 ### 1. **Modul Reservasi** - **[Anita Khoirun Nisa]**  
-- Pengguna dapat melakukan reservasi meja secara online.  
-- Formulir mencakup nama, tanggal, waktu, jumlah tamu, dan kontak.  
-- Memungkinkan pemesanan menu unik atau request tambahan.  
-- Sistem mengonfirmasi ketersediaan dan memberikan notifikasi.
+- Pengguna dapat melakukan reservasi meja secara online.
+- Formulir reservasi mencakup input nama, tanggal, waktu, jumlah tamu, dan kontak.
+- Pengguna dapat melakukan booking menu unik atau request tambahan.
+- Sistem akan mengkonfirmasi ketersediaan dan memberikan notifikasi kepada pengguna.
 
 ### 2. **Modul Ulasan dan Rating** - **[Joshua Elisha Shalom Soedarmintarto]**  
-- Pengguna login dapat menulis ulasan dan memberikan rating.  
-- Ulasan dan rating ditampilkan di halaman detail steakhouse.  
-- Pengguna dapat melihat ulasan terbaru dan terpopuler.
+- Pengguna yang telah login dapat menulis ulasan dan memberikan rating pada steakhouse yang pernah dikunjungi.
+- Ulasan dan rating akan ditampilkan pada halaman detail steakhouse.
+- Memungkinkan pengguna untuk melihat ulasan terbaru dan terpopuler.
+
 
 ### 3. **Modul Forum Diskusi**  - **[Athallah Wibowo]**  
-- Memfasilitasi diskusi topik seputar steakhouse.  
-- Pengguna dapat membuat komentar, memperbarui komentar, dan bertukar informasi.  
+- Pengguna dapat berdiskusi dengan admin dan sesama anggota lain mengenai topik seputar steakhouse dan menu.
+- Fitur meliputi pembuatan komentar, dan pemperbarui komentar.
+- Memfasilitasi interaksi dan pertukaran informasi antar pengguna dan admin.
 
 ### 4. **Modul Wishlist** - **[Nafisa Arrasyida]**  
-- Pengguna dapat menyimpan steakhouse atau menu favorit dalam kategori wishlist.  
-- Fitur untuk menambahkan, menghapus, dan mengedit wishlist.  
+-Pengguna dapat menambahkan steakhouse, menu, atau produk tertentu ke dalam daftar wishlist sesuai kategori yang pengguna buat, mereka untuk disimpan dan diakses di lain waktu.
+- Sistem memungkinkan pengguna melihat wishlist yang tersimpan, menghapus item dari wishlist jika tidak lagi diinginkan, dan mengubah lokasi kategori item.
+- Modul ini membantu pengguna menyimpan pilihan favorit mereka untuk direncanakan atau dipertimbangkan di masa mendatang.
+
 
 ### 5. **Modul Daftar**  - **[Danniel]**  
-- Pencarian steakhouse dan menu berdasarkan kriteria.  
-- Menampilkan informasi lengkap seperti gambar menu, rating, ulasan, dan lokasi.  
-- Menyediakan fitur pengeditan deskripsi steakhouse.
+- Pengguna dapat mencari steakhouse dan menu yang diinginkan.
+- Modul ini akan menampilkan gambar menu, review, rating, dan lokasi.
+- Modul ini juga dapat mengedit deskripsi steakhouse.
+
 
 ### 6. **Modul Autentikasi Django**  - **[Danniel]**  
-- Endpoint login dan register untuk pengguna.  
-- Login dengan validasi username dan password.  
-- Mendukung integrasi Flutter melalui middleware dan pengaturan CORS.  
+- Menyediakan endpoint login dan register untuk pengguna.
+- Endpoint login memungkinkan pengguna mengautentikasi dengan username dan password.
+- Endpoint register digunakan untuk mendaftarkan akun baru dengan validasi password dan ketersediaan username.
+- Mendukung middleware dan pengaturan cross-origin agar aplikasi dapat diakses dari emulator Flutter.
+- Sistem akan memvalidasi data dan memberikan respons JSON sesuai dengan hasil autentikasi atau pendaftaran.
+
 
 ---
 
 ## **Peran Pengguna Aplikasi**
 ### **Pengguna Tidak Login:**
-- Mengakses daftar steakhouse.  
-- Membaca ulasan dan rating.  
-- Melihat forum diskusi tanpa dapat berpartisipasi.
+- Dapat mengakses dan melihat daftar steakhouse.
+- Dapat membaca ulasan dan rating dari pengguna lain.
+- Dapat melihat diskusi yang ada di forum tanpa dapat berpartisipasi.
+
 
 ### **Pengguna Login:**
-- Akses pengguna tidak login.  
-- Menulis ulasan dan memberikan rating.  
-- Berpartisipasi dalam diskusi.  
-- Melakukan reservasi online.  
-- Mengelola wishlist.  
-- Menggunakan fitur pencarian steakhouse.
+- Memiliki semua akses yang dimiliki pengguna tidak login.
+- Dapat menulis ulasan dan memberikan rating pada steakhouse.  
+- Dapat berpartisipasi dalam forum diskusi (membuat topik baru dan berkomentar).
+- Dapat melakukan reservasi tempat secara online.
+- Dapat melihat daftar reservasi yang telah dibuat atau masih berlangsung.
+- Dapat melihat wishlist yang telat dibuat.
+- Dapat mengubah wishlist yang telah dibuat.
+- Dapat mencari daftar steakhouse.
+
 
 ### **Pengguna Admin:**
-- Akses pengguna login.  
-- Mengelola data steakhouse (tambah, edit, hapus).
+- Memiliki semua akses yang dimiliki pengguna login.  
+- Dapat menambahkan, mengedit dan menghapus restoran
 
 ---
 
-## **Integrasi Web Service**
+## **Alur pengintegrasian dengan web service untuk terhubung dengan aplikasi web yang sudah dibuat saat Proyek Tengah Semester**
 ### **Tahapan Integrasi**
 1. **Membuat Fungsi Web Service**  
-   Menambahkan fungsi baru untuk menerima request dari aplikasi mobile dan mengirimkan respon.  
+   Membuat fungsi baru untuk menerima request dan mengirimkan respon ke aplikasi mobile. 
 
 2. **Menghubungkan ke Aplikasi Mobile**  
-   Pada Flutter, menambahkan request HTTP ke URL yang ditentukan, lalu mengolah data yang diterima.  
+   Pada flutter aplikasi mobile, menambahkan request ke url fungsi tersebut dan mengolah data yang didapatkan dari hasil request.
 
 3. **Debugging dan Pengujian**  
-   Memastikan aplikasi berjalan sesuai spesifikasi, mengatasi error, dan memenuhi kebutuhan pengguna.  
+   Melakukan debugging dan memperbaiki apabila ada error atau hal lainnya sampai aplikasi berjalan dengan baik dan memenuhi ketentuan yang diinginkan.
 
 ---
 
