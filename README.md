@@ -35,37 +35,31 @@ Tahap I (20%)
 ---
 
 ## **Modul yang Diimplementasikan**
-### 1. **Modul Reservasi**  
-**[Anita Khoirun Nisa]**  
+### 1. **Modul Reservasi** - **[Anita Khoirun Nisa]**  
 - Pengguna dapat melakukan reservasi meja secara online.  
 - Formulir mencakup nama, tanggal, waktu, jumlah tamu, dan kontak.  
 - Memungkinkan pemesanan menu unik atau request tambahan.  
 - Sistem mengonfirmasi ketersediaan dan memberikan notifikasi.
 
-### 2. **Modul Ulasan dan Rating**  
-**[Joshua Elisha Shalom Soedarmintarto]**  
+### 2. **Modul Ulasan dan Rating** - **[Joshua Elisha Shalom Soedarmintarto]**  
 - Pengguna login dapat menulis ulasan dan memberikan rating.  
 - Ulasan dan rating ditampilkan di halaman detail steakhouse.  
 - Pengguna dapat melihat ulasan terbaru dan terpopuler.
 
-### 3. **Modul Forum Diskusi**  
-**[Athallah Wibowo]**  
+### 3. **Modul Forum Diskusi**  - **[Athallah Wibowo]**  
 - Memfasilitasi diskusi topik seputar steakhouse.  
 - Pengguna dapat membuat komentar, memperbarui komentar, dan bertukar informasi.  
 
-### 4. **Modul Wishlist**  
-**[Nafisa Arrasyida]**  
+### 4. **Modul Wishlist** - **[Nafisa Arrasyida]**  
 - Pengguna dapat menyimpan steakhouse atau menu favorit dalam kategori wishlist.  
 - Fitur untuk menambahkan, menghapus, dan mengedit wishlist.  
 
-### 5. **Modul Daftar**  
-**[Danniel]**  
+### 5. **Modul Daftar**  - **[Danniel]**  
 - Pencarian steakhouse dan menu berdasarkan kriteria.  
 - Menampilkan informasi lengkap seperti gambar menu, rating, ulasan, dan lokasi.  
 - Menyediakan fitur pengeditan deskripsi steakhouse.
 
-### 6. **Modul Autentikasi Django**  
-**[Danniel]**  
+### 6. **Modul Autentikasi Django**  - **[Danniel]**  
 - Endpoint login dan register untuk pengguna.  
 - Login dengan validasi username dan password.  
 - Mendukung integrasi Flutter melalui middleware dan pengaturan CORS.  
@@ -114,5 +108,3 @@ Tahap I (20%)
   - Proyek Tengah Semester (PTS): [GitHub PTS](https://github.com/PBP-E03/TK1-PBP)  
 
 ---
-
-Jika ada pertanyaan atau masukan, silakan hubungi anggota tim. 🎉  
