@@ -119,7 +119,7 @@ samples, guidance on mobile development, and a full API reference.
 ## **Repositori Terkait**
 
 - **GitHub Kelompok:**  
-  [PBP-C2/RavenReads_mobile](https://github.com/PBP-C2/RavenReads_mobile)
+  [GitHub E03](https://github.com/PBP-E03)
 
 - **Pembuatan Codebase Kelompok:**
   - Proyek Akhir Semester (PAS): [GitHub PAS](https://github.com/PBP-E03/TK-PAS-E03)
