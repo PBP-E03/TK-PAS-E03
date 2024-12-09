@@ -12,31 +12,40 @@ class ReviewsPage extends StatefulWidget {
 
 class _ReviewsPageState extends State<ReviewsPage> {
   List<ReviewEntry> reviews = List.from(dummyReviews); // Simulated review data
+  int currentUserId = 1; // Replace with the logged-in user's ID
 
   // Add a review
   void addReview(String text, int rating) {
-    setState(() {
-      reviews.add(
-        ReviewEntry(
-          model: "review",
-          pk: DateTime.now().millisecondsSinceEpoch.toString(),
-          fields: ReviewFields(
-            user: 0, // Replace with actual user ID when login is implemented
-            reviewerName: "test", // Placeholder for logged-in user
-            text: text,
-            rating: rating,
-            date: DateTime.now(),
-          ),
+    if (reviews.any((review) => review.fields.user == currentUserId)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("You can only leave one review per steakhouse."),
         ),
       );
-    });
+    } else {
+      setState(() {
+        reviews.add(
+          ReviewEntry(
+            model: "review",
+            pk: DateTime.now().millisecondsSinceEpoch.toString(),
+            fields: ReviewFields(
+              user: currentUserId, // Use the logged-in user's ID
+              reviewerName: "test", // Placeholder for logged-in user
+              text: text,
+              rating: rating,
+              date: DateTime.now(),
+            ),
+          ),
+        );
+      });
+    }
   }
 
   // Edit a review
   void editReview(String pk, String newText, int newRating) {
     setState(() {
       int index = reviews.indexWhere((review) => review.pk == pk);
-      if (index != -1) {
+      if (index != -1 && reviews[index].fields.user == currentUserId) {
         ReviewEntry oldReview = reviews[index];
         reviews[index] = ReviewEntry(
           model: oldReview.model,
@@ -49,6 +58,12 @@ class _ReviewsPageState extends State<ReviewsPage> {
             date: oldReview.fields.date,
           ),
         );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("You can only edit your own reviews."),
+          ),
+        );
       }
     });
   }
@@ -56,7 +71,16 @@ class _ReviewsPageState extends State<ReviewsPage> {
   // Delete a review
   void deleteReview(String pk) {
     setState(() {
-      reviews.removeWhere((review) => review.pk == pk);
+      int index = reviews.indexWhere((review) => review.pk == pk);
+      if (index != -1 && reviews[index].fields.user == currentUserId) {
+        reviews.removeAt(index);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("You can only delete your own reviews."),
+          ),
+        );
+      }
     });
   }
 
@@ -89,18 +113,22 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            _showEditDialog(context, review);
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            deleteReview(review.pk);
-                          },
-                        ),
+                        // Edit button only if it's the user's review
+                        if (review.fields.user == currentUserId)
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              _showEditDialog(context, review);
+                            },
+                          ),
+                        // Delete button only if it's the user's review
+                        if (review.fields.user == currentUserId)
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              deleteReview(review.pk);
+                            },
+                          ),
                       ],
                     ),
                   ),
