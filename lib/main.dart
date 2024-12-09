@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:steve_mobile/auth/screens/login.dart';
+import 'package:steve_mobile/steakhouse_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,53 +34,53 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final String title;
+class HomePage extends StatelessWidget {
+  final String? title;
 
-  const MyHomePage({super.key, required this.title});
+  const HomePage({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title ?? "Steve Mobile"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              final request = context.read<CookieRequest>();
+              final response = await request.logout(
+                  "http://127.0.0.1:8000/auth/flutter/logout/");
+              if (response['status'] && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("${response['message']}")),
+                );
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              }
+            },
+          )
+        ],
       ),
       body: Center(
-          child: Card(
-              child: InkWell(
-        onTap: () async {
-          final response = await request
-              .logout("http://127.0.0.1:8000/auth/flutter/logout/");
-          String message = response["message"];
-          if (context.mounted) {
-            if (response['status']) {
-              String uname = response["username"];
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("$message Sampai jumpa, $uname."),
-              ));
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
+        child: ElevatedButton(
+          onPressed: () {
+            // Navigate to a single SteakhousePage
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SteakhousePage(
+                  title: "Steakhouse Details",
                 ),
-              );
-            }
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          color: Colors.red,
-          child: const Text(
-            'Logout',
-            style: TextStyle(color: Colors.white),
-          ),
+              ),
+            );
+          },
+          child: const Text("Go to Steakhouse Page"),
         ),
-      ))),
+      ),
     );
   }
 }
+
