@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
-import 'package:steve_mobile/main.dart';
+// Scrrens
 import 'package:steve_mobile/auth/screens/register.dart';
+import 'package:steve_mobile/resto/screens/resto_list.dart';
 
 void main() {
   runApp(const LoginApp());
@@ -120,8 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const MyHomePage(title: "Kamu Masuk")),
+                                builder: (context) => const RestoListPage()),
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()

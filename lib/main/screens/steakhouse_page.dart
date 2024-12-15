@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
-import 'review/review_entry.dart';
+import '../../review/review_entry.dart';
+
+// Models
+import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 
 class SteakhousePage extends StatefulWidget {
-  final String steakhouseName;
-
-  const SteakhousePage({Key? key, required this.steakhouseName})
-      : super(key: key);
+  // final String steakhouseName;
+  final RestaurantEntry restaurant;
+  const SteakhousePage({super.key, required this.restaurant});
 
   @override
-  _SteakhousePageState createState() => _SteakhousePageState();
+  State<SteakhousePage> createState() => _SteakhousePageState();
 }
 
 class _SteakhousePageState extends State<SteakhousePage> {
+  late String steakhouseName;
+
+  @override
+  void initState() {
+    super.initState();
+    steakhouseName = widget.restaurant.fields.name;
+  }
+
   List<ReviewEntry> reviews = List.from(dummyReviews); // Simulated review data
 
   // Add a review
@@ -65,7 +75,7 @@ class _SteakhousePageState extends State<SteakhousePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.steakhouseName),
+        title: Text(steakhouseName),
       ),
       body: Column(
         children: [
@@ -91,13 +101,13 @@ class _SteakhousePageState extends State<SteakhousePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                           onPressed: () {
                             _showEditDialog(context, review);
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () {
                             deleteReview(review.pk);
                           },
