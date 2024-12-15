@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 
+// Provider
+import 'package:provider/provider.dart';
+import 'package:steve_mobile/main/providers/user_provider.dart';
+
 class RestaurantCard extends StatelessWidget {
   final RestaurantEntry restaurant;
   final VoidCallback? onDetailPressed;
@@ -25,6 +29,8 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = context.watch<UserProvider>();
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -82,14 +88,16 @@ class RestaurantCard extends StatelessWidget {
                         child: const Text('Reserve'),
                       ),
                       const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.green),
-                        onPressed: onEditPressed,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: onDeletePressed,
-                      ),
+                      if (userProvider.isSuperuser) ...[
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.green),
+                          onPressed: onEditPressed,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: onDeletePressed,
+                        ),
+                      ],
                     ],
                   ),
                 ],

@@ -12,6 +12,9 @@ import 'package:steve_mobile/resto/widgets/restaurant_card.dart';
 // Model
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 
+// Providers
+import 'package:steve_mobile/main/providers/user_provider.dart';
+
 class RestoListPage extends StatefulWidget {
   const RestoListPage({super.key});
 
@@ -81,6 +84,8 @@ class _RestoListPageState extends State<RestoListPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userProvider = context.watch<UserProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Restaurant List'),
@@ -105,6 +110,18 @@ class _RestoListPageState extends State<RestoListPage> {
               },
             ),
           ),
+          // if (userProvider.isSuperuser) ...[
+          //   Center(
+          //       child: ElevatedButton(
+          //     onPressed: () {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         const SnackBar(
+          //             content: Text('Add Restaurant button pressed')),
+          //       );
+          //     },
+          //     child: const Text('Add Restaurant'),
+          //   )),
+          // ],
           Expanded(
             child: FutureBuilder(
               future: fetchRestaurant(request),
@@ -151,6 +168,21 @@ class _RestoListPageState extends State<RestoListPage> {
           )
         ],
       ),
+      floatingActionButton: userProvider.isSuperuser
+          ? FloatingActionButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Add Restaurant button pressed')),
+                );
+              },
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0), // Square shape
+              ),
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

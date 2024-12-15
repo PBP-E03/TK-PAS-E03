@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
+// Screens
 import 'package:steve_mobile/main/screens/welcome_page.dart';
+
+// Providers
+import 'package:steve_mobile/main/providers/user_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,24 +15,30 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Provider(
-        create: (_) {
-          CookieRequest request = CookieRequest();
-          return request;
-        },
-        child: MaterialApp(
-          title: "Steve Mobile",
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-            colorScheme: ColorScheme.fromSwatch().copyWith(
-              primary: Colors.red,
-              secondary: Colors.redAccent,
-            ),
+    return MultiProvider(
+      providers: [
+        // Provides CookieRequest for handling Django authentication
+        Provider<CookieRequest>(
+          create: (_) => CookieRequest(),
+        ),
+        // Provides UserProvider for managing user-specific state
+        ChangeNotifierProvider<UserProvider>(
+          create: (_) => UserProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: "Steve Mobile",
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: Colors.red,
+            secondary: Colors.redAccent,
           ),
-          home: const HomeScreen(),
-        ));
+        ),
+        home: const HomeScreen(),
+      ),
+    );
   }
 }

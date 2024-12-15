@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:steve_mobile/auth/screens/register.dart';
 import 'package:steve_mobile/resto/screens/resto_list.dart';
 
+// Providers
+import 'package:steve_mobile/main/providers/user_provider.dart';
+
 void main() {
   runApp(const LoginApp());
 }
@@ -103,10 +106,6 @@ class _LoginPageState extends State<LoginPage> {
                       String username = _usernameController.text;
                       String password = _passwordController.text;
 
-                      // Cek kredensial
-                      // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
-                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                      // gunakan URL http://10.0.2.2/
                       final response = await request
                           .login("http://127.0.0.1:8000/auth/flutter/login/", {
                         'username': username,
@@ -116,7 +115,13 @@ class _LoginPageState extends State<LoginPage> {
                       if (request.loggedIn) {
                         String message = response['message'];
                         String uname = response['username'];
+                        bool isSuperuser = response['is_superuser'];
+                        // Update the UserProvider
+
                         if (context.mounted) {
+                          context
+                              .read<UserProvider>()
+                              .setUser(uname, isSuperuser);
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
