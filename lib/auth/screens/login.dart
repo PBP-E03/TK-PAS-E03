@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
+<<<<<<< Updated upstream
 // Scrrens
+=======
+// import 'package:steve_mobile/screens/main.dart';
+import 'package:steve_mobile/resto/screens/resto_list.dart';
+>>>>>>> Stashed changes
 import 'package:steve_mobile/auth/screens/register.dart';
 import 'package:steve_mobile/resto/screens/resto_list.dart';
 
 // Providers
 import 'package:steve_mobile/main/providers/user_provider.dart';
-
-void main() {
-  runApp(const LoginApp());
-}
 
 class LoginApp extends StatelessWidget {
   const LoginApp({super.key});
@@ -115,8 +116,11 @@ class _LoginPageState extends State<LoginPage> {
                       if (request.loggedIn) {
                         String message = response['message'];
                         String uname = response['username'];
+<<<<<<< Updated upstream
                         bool isSuperuser = response['is_superuser'];
                         // Update the UserProvider
+=======
+>>>>>>> Stashed changes
 
                         if (context.mounted) {
                           context
@@ -126,7 +130,10 @@ class _LoginPageState extends State<LoginPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const RestoListPage()),
+<<<<<<< Updated upstream
                                 builder: (context) => const RestoListPage()),
+=======
+>>>>>>> Stashed changes
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()

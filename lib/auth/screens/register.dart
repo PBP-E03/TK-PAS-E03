@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:steve_mobile/auth/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
