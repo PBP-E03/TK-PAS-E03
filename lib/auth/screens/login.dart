@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
-// Scrrens
-import 'package:steve_mobile/auth/screens/register.dart';
+// import 'package:steve_mobile/screens/main.dart';
 import 'package:steve_mobile/resto/screens/resto_list.dart';
+import 'package:steve_mobile/auth/screens/register.dart';
 
 // Providers
 import 'package:steve_mobile/main/providers/user_provider.dart';
-
-void main() {
-  runApp(const LoginApp());
-}
 
 class LoginApp extends StatelessWidget {
   const LoginApp({super.key});

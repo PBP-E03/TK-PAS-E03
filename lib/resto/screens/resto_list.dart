@@ -7,6 +7,7 @@ import 'package:steve_mobile/widgets/leftdrawer.dart';
 import 'package:steve_mobile/resto/widgets/restaurant_card.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'package:steve_mobile/main/providers/user_provider.dart';
+import 'dart:convert';
 
 class RestoListPage extends StatefulWidget {
   const RestoListPage({super.key});
@@ -44,7 +45,8 @@ class _RestoListPageState extends State<RestoListPage> {
     );
   }
 
-  void _showDeleteConfirmation(RestaurantEntry restaurant) {
+  void _showDeleteConfirmation(
+      RestaurantEntry restaurant, CookieRequest request) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -76,7 +78,9 @@ class _RestoListPageState extends State<RestoListPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
               child: const Text(
                 'Cancel',
                 style: TextStyle(color: primaryColor),
@@ -90,18 +94,38 @@ class _RestoListPageState extends State<RestoListPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${restaurant.fields.name} deleted'),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                );
+              onPressed: () async {
+                final response = await request.postJson(
+                    'http://127.0.0.1:8000/resto/flutter/delete-resto/',
+                    jsonEncode(<String, int>{
+                      'id': restaurant.pk,
+                    }));
+
+                if (context.mounted) {
+                  if (response['status'] == 'success') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Successfully deleted restaurant'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    setState(() {
+                      _searchQuery = _searchQuery;
+                    });
+
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Failed to delete restaurant'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+
+                    Navigator.pop(context);
+                  }
+                }
               },
               child: const Text('Delete'),
             ),
@@ -273,8 +297,8 @@ class _RestoListPageState extends State<RestoListPage> {
                             ),
                           );
                         },
-                        onDeletePressed: () =>
-                            _showDeleteConfirmation(filteredRestaurants[index]),
+                        onDeletePressed: () => _showDeleteConfirmation(
+                            filteredRestaurants[index], request),
                       ),
                     ),
                   ),
