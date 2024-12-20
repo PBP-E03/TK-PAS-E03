@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:steve_mobile/main/screens/welcome_page.dart';
+
+import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -9,11 +12,11 @@ import 'package:steve_mobile/main/screens/welcome_page.dart';
 import 'package:steve_mobile/main/providers/user_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SteveApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SteveApp extends StatelessWidget {
+  const SteveApp({super.key});
 
   @override
   Widget build(BuildContext context) {
