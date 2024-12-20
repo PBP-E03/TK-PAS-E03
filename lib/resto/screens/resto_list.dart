@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-
-// Screens
 import 'package:steve_mobile/main/screens/steakhouse_page.dart';
-
-// Widgets
+import 'package:steve_mobile/resto/screens/resto_entryform.dart';
 import 'package:steve_mobile/widgets/leftdrawer.dart';
 import 'package:steve_mobile/resto/widgets/restaurant_card.dart';
-
-// Model
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
-
-// Providers
 import 'package:steve_mobile/main/providers/user_provider.dart';
 
 class RestoListPage extends StatefulWidget {
@@ -24,15 +17,15 @@ class RestoListPage extends StatefulWidget {
 
 class _RestoListPageState extends State<RestoListPage> {
   var _searchQuery = '';
+  final _scrollController = ScrollController();
+
+  // Define the primary color to match the website
+  static const primaryColor = Color(0xFFDC1E2D); // Red color from website
 
   Future<List<RestaurantEntry>> fetchRestaurant(CookieRequest request) async {
     final response = await request
         .get('http://127.0.0.1:8000/resto/flutter/get-restaurants/');
-
-    // Decode to JSON
     var data = response;
-
-    // Convert JSON to List of RestaurantEntry
     List<RestaurantEntry> listRestaurant = [];
     for (var d in data) {
       if (d != null) {
@@ -56,21 +49,58 @@ class _RestoListPageState extends State<RestoListPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Restaurant'),
-          content: Text(
-              'Are you sure you want to delete ${restaurant.fields.name}?'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            'Delete Restaurant',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.warning_rounded,
+                color: Colors.orange,
+                size: 48,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Are you sure you want to delete ${restaurant.fields.name}?',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: primaryColor),
+              ),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               onPressed: () {
-                // TODO: Implement delete functionality
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${restaurant.fields.name} deleted')),
+                  SnackBar(
+                    content: Text('${restaurant.fields.name} deleted'),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 );
               },
               child: const Text('Delete'),
@@ -88,19 +118,56 @@ class _RestoListPageState extends State<RestoListPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Restaurant List'),
+        title: const Text(
+          'Restaurant List',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        elevation: 0,
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(16),
+              ),
+            ),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search Restaurants',
-                prefixIcon: const Icon(Icons.search),
+                hintStyle: TextStyle(color: Colors.grey[400]),
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.grey),
+                        onPressed: () {
+                          setState(() {
+                            _searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
+                filled: true,
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(
+                    color: Colors.white,
+                    width: 2,
+                  ),
                 ),
               ),
               onChanged: (value) {
@@ -110,77 +177,129 @@ class _RestoListPageState extends State<RestoListPage> {
               },
             ),
           ),
-          // if (userProvider.isSuperuser) ...[
-          //   Center(
-          //       child: ElevatedButton(
-          //     onPressed: () {
-          //       ScaffoldMessenger.of(context).showSnackBar(
-          //         const SnackBar(
-          //             content: Text('Add Restaurant button pressed')),
-          //       );
-          //     },
-          //     child: const Text('Add Restaurant'),
-          //   )),
-          // ],
           Expanded(
             child: FutureBuilder(
               future: fetchRestaurant(request),
               builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.data == null) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  if (!snapshot.hasData) {
-                    return const Center(child: Text('No Data'));
-                  } else {
-                    // Filter restaurants based on search query
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: primaryColor,
+                    ),
+                  );
+                }
 
-                    List<RestaurantEntry> filteredRestaurants = [];
-                    for (var restaurant in snapshot.data) {
-                      if (restaurant.fields.name
-                          .toLowerCase()
-                          .contains(_searchQuery.toLowerCase())) {
-                        filteredRestaurants.add(restaurant);
-                      }
-                    }
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.restaurant_outlined,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No restaurants found',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
-                    return ListView.builder(
-                      itemCount: filteredRestaurants.length,
-                      itemBuilder: (_, index) => RestaurantCard(
+                List<RestaurantEntry> filteredRestaurants = [];
+                for (var restaurant in snapshot.data) {
+                  if (restaurant.fields.name
+                      .toLowerCase()
+                      .contains(_searchQuery.toLowerCase())) {
+                    filteredRestaurants.add(restaurant);
+                  }
+                }
+
+                if (filteredRestaurants.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off_rounded,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No restaurants match your search',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {});
+                  },
+                  color: primaryColor,
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+                    itemCount: filteredRestaurants.length,
+                    itemBuilder: (_, index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: RestaurantCard(
                         restaurant: filteredRestaurants[index],
                         onDetailPressed: () =>
                             _reserveClick(filteredRestaurants[index]),
                         onEditPressed: () {
-                          // TODO: Implement edit functionality
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text(
-                                    'Edit ${filteredRestaurants[index].fields.name}')),
+                              content: Text(
+                                'Edit ${filteredRestaurants[index].fields.name}',
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                           );
                         },
                         onDeletePressed: () =>
                             _showDeleteConfirmation(filteredRestaurants[index]),
                       ),
-                    );
-                  }
-                }
+                    ),
+                  ),
+                );
               },
             ),
-          )
+          ),
         ],
       ),
       floatingActionButton: userProvider.isSuperuser
-          ? FloatingActionButton(
+          ? FloatingActionButton.extended(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Add Restaurant button pressed')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return const RestoEntryFormPage();
+                  }),
                 );
               },
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: primaryColor,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Restaurant'),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0), // Square shape
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: const Icon(Icons.add),
             )
           : null,
     );
