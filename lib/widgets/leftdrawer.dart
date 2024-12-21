@@ -21,7 +21,7 @@ class LeftDrawer extends StatelessWidget {
               child: const Column(
                 children: [
                   Text(
-                    'Shippy E-Commerce App',
+                    'Steve Restaurants',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -31,7 +31,7 @@ class LeftDrawer extends StatelessWidget {
                   ),
                   Padding(padding: EdgeInsets.all(8)),
                   Text(
-                    "Ayo habisi duitmu di Shippy!",
+                    "Find Your Favorite Restaurants",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.normal,

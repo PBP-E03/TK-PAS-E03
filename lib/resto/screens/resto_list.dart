@@ -8,6 +8,7 @@ import 'package:steve_mobile/resto/widgets/restaurant_card.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'package:steve_mobile/main/providers/user_provider.dart';
 import 'dart:convert';
+import 'package:steve_mobile/resto/screens/resto_editform,.dart';
 
 class RestoListPage extends StatefulWidget {
   const RestoListPage({super.key});
@@ -284,17 +285,13 @@ class _RestoListPageState extends State<RestoListPage> {
                         onDetailPressed: () =>
                             _reserveClick(filteredRestaurants[index]),
                         onEditPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Edit ${filteredRestaurants[index].fields.name}',
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return RestoEditEntryFormPage(
+                                restaurant: filteredRestaurants[index],
+                              );
+                            }),
                           );
                         },
                         onDeletePressed: () => _showDeleteConfirmation(
