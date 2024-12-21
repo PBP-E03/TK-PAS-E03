@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:steve_mobile/auth/screens/login.dart';
 import 'package:steve_mobile/resto/screens/resto_list.dart';
+import 'package:steve_mobile/wishlist/screens/wishlist_page.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -49,6 +50,15 @@ class LeftDrawer extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const RestoListPage()));
+              }),
+          ListTile(
+              leading: const Icon(Icons.favorite_border),
+              title: const Text('Wishlist'),
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WishlistPage()));
               }),
           ListTile(
             leading: const Icon(Icons.logout),
