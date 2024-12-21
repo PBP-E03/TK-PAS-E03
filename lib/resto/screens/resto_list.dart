@@ -287,11 +287,16 @@ class _RestoListPageState extends State<RestoListPage> {
                         onEditPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) {
-                              return RestoEditEntryFormPage(
+                            MaterialPageRoute(
+                              builder: (context) => RestoEditEntryFormPage(
                                 restaurant: filteredRestaurants[index],
-                              );
-                            }),
+                                onEditComplete: () {
+                                  setState(() {
+                                    _searchQuery = _searchQuery;
+                                  });
+                                },
+                              ),
+                            ),
                           );
                         },
                         onDeletePressed: () => _showDeleteConfirmation(
@@ -311,7 +316,13 @@ class _RestoListPageState extends State<RestoListPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return const RestoEntryFormPage();
+                    return RestoEntryFormPage(
+                      onCreateAction: () {
+                        setState(() {
+                          _searchQuery = _searchQuery;
+                        });
+                      },
+                    );
                   }),
                 );
               },

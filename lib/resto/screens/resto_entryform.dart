@@ -6,7 +6,8 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 
 class RestoEntryFormPage extends StatefulWidget {
-  const RestoEntryFormPage({super.key});
+  const RestoEntryFormPage({super.key, this.onCreateAction});
+  final VoidCallback? onCreateAction;
 
   @override
   _RestoEntryFormPageState createState() => _RestoEntryFormPageState();
@@ -223,6 +224,7 @@ class _RestoEntryFormPageState extends State<RestoEntryFormPage> {
                             backgroundColor: Colors.green,
                           ),
                         );
+                        widget.onCreateAction!();
                         Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

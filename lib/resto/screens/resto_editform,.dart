@@ -9,8 +9,10 @@ import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'dart:convert';
 
 class RestoEditEntryFormPage extends StatefulWidget {
-  const RestoEditEntryFormPage({super.key, required this.restaurant});
+  const RestoEditEntryFormPage(
+      {super.key, required this.restaurant, this.onEditComplete});
   final RestaurantEntry restaurant;
+  final VoidCallback? onEditComplete;
 
   @override
   _RestoEditEntryFormPageState createState() => _RestoEditEntryFormPageState();
@@ -243,6 +245,7 @@ class _RestoEditEntryFormPageState extends State<RestoEditEntryFormPage> {
                                   backgroundColor: Colors.green,
                                 ),
                               );
+                              widget.onEditComplete!();
                               Navigator.pop(context);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
