@@ -46,6 +46,20 @@ class _RestoListPageState extends State<RestoListPage> {
     );
   }
 
+  int _calculateCrossAxisCount(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    // Define breakpoints for different screen sizes
+    if (screenWidth > 1200) {
+      return 4; // Extra large screens
+    } else if (screenWidth > 900) {
+      return 3; // Large screens
+    } else if (screenWidth > 600) {
+      return 2; // Medium screens
+    } else {
+      return 1; // Small screens
+    }
+  }
+
   void _showDeleteConfirmation(
       RestaurantEntry restaurant, CookieRequest request) {
     showDialog(
@@ -270,41 +284,59 @@ class _RestoListPageState extends State<RestoListPage> {
                 }
 
                 return RefreshIndicator(
-                  onRefresh: () async {
-                    setState(() {});
-                  },
-                  color: primaryColor,
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
-                    itemCount: filteredRestaurants.length,
-                    itemBuilder: (_, index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: RestaurantCard(
-                        restaurant: filteredRestaurants[index],
-                        onDetailPressed: () =>
-                            _reserveClick(filteredRestaurants[index]),
-                        onEditPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RestoEditEntryFormPage(
-                                restaurant: filteredRestaurants[index],
-                                onEditComplete: () {
-                                  setState(() {
-                                    _searchQuery = _searchQuery;
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        onDeletePressed: () => _showDeleteConfirmation(
-                            filteredRestaurants[index], request),
-                      ),
-                    ),
-                  ),
-                );
+                    onRefresh: () async {
+                      setState(() {});
+                    },
+                    color: primaryColor,
+                    child: // Replace the ListView.builder in RestoListPage with this GridView.builder
+                        LayoutBuilder(
+                      builder: (context, constraints) {
+                        final crossAxisCount =
+                            _calculateCrossAxisCount(context);
+                        // Calculate card width based on available space
+                        final cardWidth = (constraints.maxWidth -
+                                (32 + (12 * (crossAxisCount - 1)))) /
+                            crossAxisCount;
+                        // Adjust aspect ratio based on card width to maintain consistent height
+                        final aspectRatio =
+                            cardWidth / 220; // 220 is the target card height
+
+                        return GridView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: crossAxisCount,
+                            childAspectRatio: aspectRatio,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                          itemCount: filteredRestaurants.length,
+                          itemBuilder: (_, index) => RestaurantCard(
+                            restaurant: filteredRestaurants[index],
+                            onDetailPressed: () =>
+                                _reserveClick(filteredRestaurants[index]),
+                            onEditPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RestoEditEntryFormPage(
+                                    restaurant: filteredRestaurants[index],
+                                    onEditComplete: () {
+                                      setState(() {
+                                        _searchQuery = _searchQuery;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            onDeletePressed: () => _showDeleteConfirmation(
+                                filteredRestaurants[index], request),
+                          ),
+                        );
+                      },
+                    ));
               },
             ),
           ),

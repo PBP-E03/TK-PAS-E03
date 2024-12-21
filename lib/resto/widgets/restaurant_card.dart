@@ -13,6 +13,7 @@ class RestaurantCard extends StatelessWidget {
   final VoidCallback? onDetailPressed;
   final VoidCallback? onEditPressed;
   final VoidCallback? onDeletePressed;
+  static const primaryColor = Color(0xFFDC1E2D);
 
   const RestaurantCard({
     super.key,
@@ -21,14 +22,6 @@ class RestaurantCard extends StatelessWidget {
     this.onEditPressed,
     this.onDeletePressed,
   });
-
-  String ratingStar(int rating) {
-    String star = '';
-    for (int i = 0; i < rating; i++) {
-      star += '⭐';
-    }
-    return star;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,81 +37,155 @@ class RestaurantCard extends StatelessWidget {
     }
 
     return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Placeholder image (you can replace with network image later)
-            Container(
-              width: 100,
-              height: 100,
-              color: Colors.grey[300],
-              child: const Icon(Icons.restaurant, size: 50, color: Colors.grey),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () => _showDetailDialog(restaurant),
-                    child: Text(
-                      restaurant.fields.name,
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+      clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: InkWell(
+        onTap: () => _showDetailDialog(restaurant),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth > 300;
+
+            return Row(
+              children: [
+                // Image container
+                Container(
+                  width: isWide ? 120 : 100,
+                  height: double.infinity,
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child:
+                        Icon(Icons.restaurant, size: 40, color: primaryColor),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Location: ${restaurant.fields.location}",
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Rating: ${ratingStar(restaurant.fields.rating)}",
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Price: Rp.${restaurant.fields.price}",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: onDetailPressed,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                restaurant.fields.name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (userProvider.isSuperuser && isWide)
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.green,
+                                      size: 20,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 32,
+                                      minHeight: 32,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    onPressed: onEditPressed,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 32,
+                                      minHeight: 32,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    onPressed: onDeletePressed,
+                                  ),
+                                ],
+                              ),
+                          ],
                         ),
-                        child: const Text('Reserve'),
-                      ),
-                      const SizedBox(width: 8),
-                      if (userProvider.isSuperuser) ...[
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.green),
-                          onPressed: onEditPressed,
+                        const SizedBox(height: 4),
+                        Text(
+                          restaurant.fields.location,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: onDeletePressed,
+                        const Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Rp.${restaurant.fields.price}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: primaryColor,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: onDetailPressed,
+                              style: TextButton.styleFrom(
+                                foregroundColor: primaryColor,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                minimumSize: const Size(60, 32),
+                              ),
+                              child: const Text('Reserve'),
+                            ),
+                          ],
                         ),
+                        if (userProvider.isSuperuser && !isWide)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.green,
+                                  size: 20,
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 32,
+                                  minHeight: 32,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: onEditPressed,
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 32,
+                                  minHeight: 32,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: onDeletePressed,
+                              ),
+                            ],
+                          ),
                       ],
-                    ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
