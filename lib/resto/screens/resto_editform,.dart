@@ -1,11 +1,8 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'package:steve_mobile/widgets/leftdrawer.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'dart:convert';
 
 class RestoEditEntryFormPage extends StatefulWidget {

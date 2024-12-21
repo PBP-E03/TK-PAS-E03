@@ -5,6 +5,9 @@ import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'package:provider/provider.dart';
 import 'package:steve_mobile/main/providers/user_provider.dart';
 
+// Widget
+import 'package:steve_mobile/resto/widgets/restaurant_detail.dart';
+
 class RestaurantCard extends StatelessWidget {
   final RestaurantEntry restaurant;
   final VoidCallback? onDetailPressed;
@@ -31,6 +34,15 @@ class RestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
 
+    void _showDetailDialog(RestaurantEntry restaurant) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return RestaurantDetailDialog(restaurant: restaurant);
+        },
+      );
+    }
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -51,11 +63,14 @@ class RestaurantCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    restaurant.fields.name,
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => _showDetailDialog(restaurant),
+                    child: Text(
+                      restaurant.fields.name,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
