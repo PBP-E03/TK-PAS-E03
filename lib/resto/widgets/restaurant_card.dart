@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
+import 'package:steve_mobile/reservasion/widgets/reservation_page.dart';
 
 // Provider
 import 'package:provider/provider.dart';
@@ -80,7 +81,23 @@ class RestaurantCard extends StatelessWidget {
                   Row(
                     children: [
                       ElevatedButton(
-                        onPressed: onDetailPressed,
+                        onPressed: () {
+                          if (restaurant.fields != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReservationPage(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Restaurant data is incomplete.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           foregroundColor: Colors.white,
