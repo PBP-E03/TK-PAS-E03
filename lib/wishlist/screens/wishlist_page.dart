@@ -213,7 +213,6 @@ class _WishlistPageState extends State<WishlistPage> {
                                                                   'message'] ==
                                                               'Category deleted successfully') {
                                                             ScaffoldMessenger
-                                                                    // ignore: use_build_context_synchronously
                                                                     .of(context)
                                                                 .showSnackBar(
                                                               const SnackBar(
@@ -458,8 +457,149 @@ class _WishlistPageState extends State<WishlistPage> {
                                     ),
                                   );
                                 },
-                                onEditPressed: () {},
-                                onDeletePressed: () {},
+                                onEditPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => EditWishlistDialog(
+                                      initialTitle: item.fields.title,
+                                      initialCategory:
+                                          item.fields.wishlistCategory,
+                                      categoryItems: wishlistProduct
+                                          .wishlistCategories
+                                          .map((category) {
+                                        return DropdownMenuItem<int?>(
+                                          value: category.pk,
+                                          child: Text(category.fields.name),
+                                        );
+                                      }).toList(),
+                                      onEdit: (editedTitle, editedCategory,
+                                          newCategoryName) async {
+                                        try {
+                                          final response =
+                                              await request.postJson(
+                                            "http://127.0.0.1:8000/wishlist/edit-flutter/",
+                                            jsonEncode(<String, String?>{
+                                              'wishlist_id': item.pk.toString(),
+                                              'title': editedTitle,
+                                              'category_id':
+                                                  editedCategory?.toString(),
+                                              'new_category_name':
+                                                  editedCategory == null
+                                                      ? newCategoryName
+                                                      : null,
+                                            }),
+                                          );
+
+                                          if (response['status'] == 'success') {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      "Wishlist item updated!")),
+                                            );
+                                            setState(() {
+                                              filteredItems = selectedCategory ==
+                                                      null
+                                                  ? wishlistProduct
+                                                      .wishlistItems
+                                                  : wishlistProduct
+                                                      .wishlistItems
+                                                      .where((item) =>
+                                                          item.fields
+                                                              .wishlistCategory ==
+                                                          selectedCategory)
+                                                      .toList();
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      "Failed to update.")),
+                                            );
+                                          }
+                                        } catch (e) {
+                                          print('Error updating wishlist: $e');
+                                        }
+                                      },
+                                    ),
+                                  );
+                                },
+                                onDeletePressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Confirm Deletion'),
+                                        content: Text(
+                                            'Are you sure you want to delete "${item.fields.title}" from your wishlist?'),
+                                        actions: <Widget>[
+                                          // Cancel button
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                          // Confirm button
+                                          TextButton(
+                                            onPressed: () async {
+                                              try {
+                                                final response =
+                                                    await request.postJson(
+                                                  "http://127.0.0.1:8000/wishlist/delete-flutter/",
+                                                  jsonEncode(<String, String?>{
+                                                    'wishlist_id':
+                                                        item.pk.toString(),
+                                                  }),
+                                                );
+                                                if (response['status'] ==
+                                                    'success') {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                        content: Text(
+                                                            "Wishlist item deleted!")),
+                                                  );
+                                                  setState(() {
+                                                    filteredItems = selectedCategory ==
+                                                            null
+                                                        ? wishlistProduct
+                                                            .wishlistItems
+                                                        : wishlistProduct
+                                                            .wishlistItems
+                                                            .where((item) =>
+                                                                item.fields
+                                                                    .wishlistCategory ==
+                                                                selectedCategory)
+                                                            .toList();
+                                                  });
+                                                } else {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                        content: Text(
+                                                            "Failed to delete.")),
+                                                  );
+                                                }
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                      content:
+                                                          Text("Error: $e")),
+                                                );
+                                              }
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Delete'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
                               );
                             }).toList(),
                     ),
