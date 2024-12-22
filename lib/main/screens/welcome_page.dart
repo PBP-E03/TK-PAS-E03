@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
             child: Opacity(
               opacity: 1,
               child: Image.asset(
-                '../../assets/home_bg.jpg',
+                'assets/home_bg.jpg',
                 fit: BoxFit.cover,
               ),
             ),
