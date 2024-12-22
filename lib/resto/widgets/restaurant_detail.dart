@@ -27,7 +27,7 @@ class _RestaurantDetailDialogState extends State<RestaurantDetailDialog> {
 
   Future<void> fetchCategories(CookieRequest request) async {
     final response = await request.get(
-        "http://danniel-steve.pbp.cs.ui.ac.id/wishlist/fetch-user-categories/");
+        "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/fetch-user-categories/");
     final List<dynamic> data = response;
     if (mounted) {
       setState(() {
@@ -103,8 +103,8 @@ class _RestaurantDetailDialogState extends State<RestaurantDetailDialog> {
                     final newCategory = newCategoryController.text;
 
                     try {
-                      final response = await request.postJson(
-                          "http://danniel-steve.pbp.cs.ui.ac.id/wishlist/add-flutter/",
+                      final response = await request.post(
+                          "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/add-flutter/",
                           jsonEncode(<String, String?>{
                             'restaurant_id': widget.restaurant.pk.toString(),
                             'title': title,

@@ -31,7 +31,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/get_rating/${widget.restaurantId}/'),
+            'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/get_rating/${widget.restaurantId}/'),
       );
 
       if (response.statusCode == 200) {
@@ -194,8 +194,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
       "comment": comment,
     };
 
-    final response = await request.postJson(
-      'http://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/add_review/${widget.restaurantId}/',
+    final response = await request.post(
+      'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/add_review/${widget.restaurantId}/',
       json.encode(payload),
     );
 
@@ -266,8 +266,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
   // Edit review API call
   Future<void> _editReview(
       int reviewId, String comment, int rating, CookieRequest request) async {
-    final response = await request.postJson(
-      'http://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/edit_review/$reviewId/',
+    final response = await request.post(
+      'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/edit_review/$reviewId/',
       json.encode({
         "rating": rating,
         "comment": comment,
@@ -287,8 +287,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   // Delete review function
   Future<void> _deleteReview(int reviewId, CookieRequest request) async {
-    final response = await request.postJson(
-      'http://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/delete_review/$reviewId/',
+    final response = await request.post(
+      'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/delete_review/$reviewId/',
       json.encode({}),
     );
 

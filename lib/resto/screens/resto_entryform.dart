@@ -202,7 +202,7 @@ class _RestoEntryFormPageState extends State<RestoEntryFormPage> {
                   if (_formKey.currentState!.validate()) {
                     // Handle form submission here
                     final response = await request.postJson(
-                      "http://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/create-resto/",
+                      "https://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/create-resto/",
                       jsonEncode(<String, String>{
                         'name': _name,
                         'address': _address,

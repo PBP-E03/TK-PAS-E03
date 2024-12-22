@@ -228,8 +228,8 @@ class _WishlistPageState extends State<WishlistPage> {
   Future<void> _deleteWishlistItem(int itemId) async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.postJson(
-        "http://danniel-steve.pbp.cs.ui.ac.id/wishlist/delete-flutter/",
+      final response = await request.post(
+        "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/delete-flutter/",
         jsonEncode({'wishlist_id': itemId.toString()}),
       );
       if (response['status'] == 'success') {
@@ -257,8 +257,8 @@ class _WishlistPageState extends State<WishlistPage> {
   Future<void> _deleteCategory(int categoryId) async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.postJson(
-        "http://danniel-steve.pbp.cs.ui.ac.id/wishlist/delete-category-flutter/",
+      final response = await request.post(
+        "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/delete-category-flutter/",
         jsonEncode({'category_id': categoryId.toString()}),
       );
       if (response['message'] == 'Category deleted successfully') {
@@ -284,8 +284,8 @@ class _WishlistPageState extends State<WishlistPage> {
       int? editedCategory, String newCategoryName) async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.postJson(
-        "http://danniel-steve.pbp.cs.ui.ac.id/wishlist/edit-flutter/",
+      final response = await request.post(
+        "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/edit-flutter/",
         jsonEncode(<String, String?>{
           'wishlist_id': itemId.toString(),
           'title': editedTitle,
