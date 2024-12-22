@@ -137,15 +137,6 @@ class _SteakhousePageState extends State<SteakhousePage> {
                   child: const Text("Add Review"),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    _addToWishlistDialog(context);
-                  },
-                  child: const Text("Add To Wishlist"),
-                ),
-              ),
             ],
           )
         ],

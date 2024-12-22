@@ -2,7 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 
-class RestaurantDetailDialog extends StatelessWidget {
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+
+import 'dart:convert';
+
+class RestaurantDetailDialog extends StatefulWidget {
   final RestaurantEntry restaurant;
   static const primaryColor = Color(0xFFDC1E2D);
 
@@ -10,6 +15,129 @@ class RestaurantDetailDialog extends StatelessWidget {
     super.key,
     required this.restaurant,
   });
+
+  @override
+  State<RestaurantDetailDialog> createState() => _RestaurantDetailDialogState();
+}
+
+class _RestaurantDetailDialogState extends State<RestaurantDetailDialog> {
+  List<Map<String, dynamic>> categories = [];
+  bool showNewCategoryField = false;
+  static const primaryColor = Color(0xFFDC1E2D);
+
+  Future<void> fetchCategories(CookieRequest request) async {
+    final response = await request
+        .get("http://127.0.0.1:8000/wishlist/fetch-user-categories/");
+    final List<dynamic> data = response;
+    if (mounted) {
+      setState(() {
+        categories =
+            data.map((e) => {'id': e['id'], 'name': e['name']}).toList();
+      });
+    }
+  }
+
+  void _addToWishlistDialog(BuildContext context) async {
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController newCategoryController = TextEditingController();
+    final request = Provider.of<CookieRequest>(context, listen: false);
+
+    await fetchCategories(request);
+    String? selectedCategory;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Add To Wishlist"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: titleController,
+                    decoration: const InputDecoration(labelText: "Title"),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedCategory,
+                    hint: const Text("Select a category"),
+                    isExpanded: true,
+                    items: [
+                      ...categories.map((category) {
+                        return DropdownMenuItem<String>(
+                          value: category['id'].toString(),
+                          child: Text(category['name']),
+                        );
+                      }).toList(),
+                      const DropdownMenuItem<String>(
+                        value: 'new',
+                        child: Text("Create a new category"),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                        showNewCategoryField = value == 'new';
+                      });
+                    },
+                  ),
+                  if (showNewCategoryField)
+                    TextField(
+                      controller: newCategoryController,
+                      decoration:
+                          const InputDecoration(labelText: "New Category Name"),
+                    ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final title = titleController.text;
+                    final newCategory = newCategoryController.text;
+
+                    try {
+                      final response = await request.postJson(
+                          "http://127.0.0.1:8000/wishlist/add-flutter/",
+                          jsonEncode(<String, String?>{
+                            'restaurant_id': widget.restaurant.pk.toString(),
+                            'title': title,
+                            'category_id': selectedCategory == 'new'
+                                ? null
+                                : selectedCategory,
+                            'new_category_name':
+                                selectedCategory == 'new' ? newCategory : null,
+                          }));
+
+                      if (response['status'] == 'success') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Added to wishlist!")),
+                        );
+                        Navigator.of(context).pop();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Failed to add.")),
+                        );
+                      }
+                    } catch (e) {
+                      print('Error adding to wishlist: $e');
+                    }
+                  },
+                  child: const Text("Add"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +158,7 @@ class RestaurantDetailDialog extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      restaurant.fields.name,
+                      widget.restaurant.fields.name,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -81,7 +209,7 @@ class RestaurantDetailDialog extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${restaurant.fields.openingTime} - ${restaurant.fields.closingTime}',
+                            '${widget.restaurant.fields.openingTime} - ${widget.restaurant.fields.closingTime}',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey[600],
@@ -95,16 +223,16 @@ class RestaurantDetailDialog extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              _buildInfoRow(
-                  Icons.location_on, 'Location:', restaurant.fields.location),
+              _buildInfoRow(Icons.location_on, 'Location:',
+                  widget.restaurant.fields.location),
               const SizedBox(height: 16),
 
-              _buildInfoRow(
-                  Icons.star, 'Rating:', '${restaurant.fields.rating}/5'),
+              _buildInfoRow(Icons.star, 'Rating:',
+                  '${widget.restaurant.fields.rating}/5'),
               const SizedBox(height: 16),
 
               _buildInfoRow(Icons.attach_money, 'Average Price:',
-                  'Rp.${restaurant.fields.price.toString()}'),
+                  'Rp.${widget.restaurant.fields.price.toString()}'),
               const SizedBox(height: 16),
 
               // Special Menu Section
@@ -133,7 +261,7 @@ class RestaurantDetailDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      restaurant.fields.specialMenu,
+                      widget.restaurant.fields.specialMenu,
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -167,7 +295,7 @@ class RestaurantDetailDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      restaurant.fields.description,
+                      widget.restaurant.fields.description,
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -189,10 +317,10 @@ class RestaurantDetailDialog extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    // Add your reserve functionality here
+                    _addToWishlistDialog(context);
                   },
                   child: const Text(
-                    'Make Reservation',
+                    'Add to Wishlist',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -237,4 +365,5 @@ class RestaurantDetailDialog extends StatelessWidget {
       ],
     );
   }
+  // Your existing build method and _buildInfoRow method here
 }
