@@ -61,6 +61,15 @@ class LeftDrawer extends StatelessWidget {
                         builder: (context) => const WishlistPage()));
               }),
           ListTile(
+              leading: const Icon(Icons.bookmark_outline),
+              title: const Text('Wishlist'),
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WishlistPage()));
+              }),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {
