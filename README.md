@@ -130,3 +130,4 @@ samples, guidance on mobile development, and a full API reference.
 ## **Tautan Deploy**
 
 [Instalasi Aplikasi](https://appcenter.ms/download?url=%2Fv0.1%2Fapps%2FPBP-E03%2FSteve-Mobile%2Fbuilds%2F3%2Fdownloads%2Fbuild)
+[Instalasi Aplikasi Terbaru](https://appcenter.ms/download?url=%2Fv0.1%2Fapps%2FPBP-E03%2FSteve-Mobile%2Fbuilds%2F8%2Fdownloads%2Fbuild)
