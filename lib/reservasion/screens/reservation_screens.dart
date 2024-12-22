@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -21,6 +23,23 @@ class _ReservationPageState extends State<ReservationPage> {
 
   bool get hasActiveReservation {
     return reservations.any((reservation) => reservation["status"] == "active");
+  }
+
+  Future<List<Map<String, String>>> fetchReservations() async {
+    try {
+      // Simulating a fetch from an API (or database)
+      final response = await Future.delayed(Duration(seconds: 1), () {
+        return {'status': 'success', 'reservations': []}; // Mock data
+      });
+
+      if (response['status'] == 'success') {
+        return List<Map<String, String>>.from(response['reservations'] as List);
+      } else {
+        throw Exception("Failed to load reservations.");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
   }
 
   Future<void> _loadReservations() async {
@@ -157,6 +176,7 @@ class _ReservationPageState extends State<ReservationPage> {
     );
   }
 
+  
   void _deleteReservation(int index) {
     setState(() {
       reservations.removeAt(index);
@@ -170,17 +190,66 @@ class _ReservationPageState extends State<ReservationPage> {
     );
   }
 
-  void _editReservation(int index) {
-    setState(() {
-      _editingIndex = index;
-      final reservation = reservations[index];
-      _nameController.text = reservation["name"]!;
-      _dateController.text = reservation["date"]!;
-      _timeController.text = reservation["time"]!;
-      _guestsController.text = reservation["guests"]!;
-      _contactInfoController.text = reservation["contactInfo"]!;
-      _specialRequestController.text = reservation["specialRequest"]!;
-    });
+  Future<void> _editReservation(int reservationId, String editedName,
+      String editedDate, String editedTime, int editedGuests,
+      String editedContactInfo, String editedSpecialRequest) async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.postJson(
+        "http://127.0.0.1:8000/reservation/edit-flutter/",
+        jsonEncode({
+          'reservation_id': reservationId.toString(),
+          'name': editedName,
+          'date': editedDate,
+          'time': editedTime,
+          'guests': editedGuests.toString(),
+          'contact_info': editedContactInfo,
+          'special_request': editedSpecialRequest,
+        }),
+      );
+
+      if (response['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Reservation updated!"))
+        );
+        final updatedReservations = await fetchReservations();
+
+        setState(() {
+          reservations = updatedReservations;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to update reservation."))
+        );
+      }
+    } catch (e) {
+      // Handle error if the request fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e"))
+      );
+    }
+  }
+
+  void _showEditReservationDialog(int index, Map<String, String> reservation) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return EditReservationDialog(
+          initialName: reservation["name"]!,
+          initialDate: reservation["date"]!,
+          initialTime: reservation["time"]!,
+          initialGuests: reservation["guests"]!,
+          initialContactInfo: reservation["contactInfo"]!,
+          initialSpecialRequest: reservation["specialRequest"]!,
+          onEdit: (name, date, time, guests, contactInfo, specialRequest) async {
+            await _editReservation(
+              int.parse(reservation["id"]!), name, date, time, int.parse(guests),
+              contactInfo, specialRequest
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -233,14 +302,12 @@ class _ReservationPageState extends State<ReservationPage> {
                     controller: _dateController,
                     decoration: InputDecoration(
                       labelText: 'Date',
-                      hintText: 'Select a date',
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.calendar_today),
                         onPressed: () => _selectDate(context),
                       ),
                     ),
-                    readOnly: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please select a date';
@@ -253,14 +320,12 @@ class _ReservationPageState extends State<ReservationPage> {
                     controller: _timeController,
                     decoration: InputDecoration(
                       labelText: 'Time',
-                      hintText: 'Select a time',
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.access_time),
                         onPressed: () => _selectTime(context),
                       ),
                     ),
-                    readOnly: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please select a time';
@@ -272,15 +337,12 @@ class _ReservationPageState extends State<ReservationPage> {
                   TextFormField(
                     controller: _guestsController,
                     decoration: InputDecoration(
-                      labelText: 'Number of Guests',
+                      labelText: 'Number of guests',
                       border: OutlineInputBorder(),
                     ),
-                    keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the number of guests';
-                      } else if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                        return 'Please enter a valid number of guests';
                       }
                       return null;
                     },
@@ -289,12 +351,12 @@ class _ReservationPageState extends State<ReservationPage> {
                   TextFormField(
                     controller: _contactInfoController,
                     decoration: InputDecoration(
-                      labelText: 'Contact Info',
+                      labelText: 'Contact info',
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please provide your contact information';
+                        return 'Please enter contact info';
                       }
                       return null;
                     },
@@ -303,80 +365,134 @@ class _ReservationPageState extends State<ReservationPage> {
                   TextFormField(
                     controller: _specialRequestController,
                     decoration: InputDecoration(
-                      labelText: 'Special Request (Optional)',
+                      labelText: 'Special requests',
                       border: OutlineInputBorder(),
                     ),
+                    validator: (value) {
+                      return null;
+                    },
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _saveReservation,
-                    child: Text(_editingIndex == null ? 'Save Reservation' : 'Update Reservation'),
+                    child: Text('Save Reservation'),
                   ),
                 ],
               ),
             ),
             SizedBox(height: 20),
             Expanded(
-              child: reservations.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No reservations found.',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: reservations.length,
-                      itemBuilder: (context, index) {
-                        final reservation = reservations[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          child: ListTile(
-                            title: Text(
-                              'Reservation for ${reservation["name"]} on ${reservation["date"]}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+              child: ListView.builder(
+                itemCount: reservations.length,
+                itemBuilder: (context, index) {
+                  final reservation = reservations[index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(reservation["name"]!),
+                      subtitle: Text("Date: ${reservation["date"]}, Time: ${reservation["time"]}"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (reservation["status"] == "active")
+                            IconButton(
+                              icon: Icon(Icons.check),
+                              onPressed: () => _completeReservation(index),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Time: ${reservation["time"]}'),
-                                Text('Guests: ${reservation["guests"]}'),
-                                Text('Contact: ${reservation["contactInfo"]}'),
-                                if (reservation["specialRequest"] != null &&
-                                    reservation["specialRequest"]!.isNotEmpty)
-                                  Text(
-                                      'Special Request: ${reservation["specialRequest"]}'),
-                              ],
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (reservation["status"] == "active")
-                                  IconButton(
-                                    icon: Icon(Icons.check, color: Colors.green),
-                                    onPressed: () => _completeReservation(index),
-                                    tooltip: 'Complete Reservation',
-                                  ),
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.blue),
-                                  onPressed: () => _editReservation(index),
-                                  tooltip: 'Edit Reservation',
-                                ),
-                                if (reservation["status"] == "completed")
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () => _deleteReservation(index),
-                                    tooltip: 'Delete Reservation',
-                                  ),
-                              ],
-                            ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () => _deleteReservation(index),
                           ),
-                        );
-                      },
+                        ],
+                      ),
+                      onTap: () => _showEditReservationDialog(index, reservation),
                     ),
+                  );
+                },
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class EditReservationDialog extends StatelessWidget {
+  final String initialName;
+  final String initialDate;
+  final String initialTime;
+  final String initialGuests;
+  final String initialContactInfo;
+  final String initialSpecialRequest;
+  final Function(String, String, String, String, String, String) onEdit;
+
+  EditReservationDialog({
+    required this.initialName,
+    required this.initialDate,
+    required this.initialTime,
+    required this.initialGuests,
+    required this.initialContactInfo,
+    required this.initialSpecialRequest,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController _nameController = TextEditingController(text: initialName);
+    final TextEditingController _dateController = TextEditingController(text: initialDate);
+    final TextEditingController _timeController = TextEditingController(text: initialTime);
+    final TextEditingController _guestsController = TextEditingController(text: initialGuests);
+    final TextEditingController _contactInfoController = TextEditingController(text: initialContactInfo);
+    final TextEditingController _specialRequestController = TextEditingController(text: initialSpecialRequest);
+
+    return AlertDialog(
+      title: Text('Edit Reservation'),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+            controller: _nameController,
+            decoration: InputDecoration(labelText: 'Name'),
+          ),
+          TextFormField(
+            controller: _dateController,
+            decoration: InputDecoration(labelText: 'Date'),
+          ),
+          TextFormField(
+            controller: _timeController,
+            decoration: InputDecoration(labelText: 'Time'),
+          ),
+          TextFormField(
+            controller: _guestsController,
+            decoration: InputDecoration(labelText: 'Guests'),
+          ),
+          TextFormField(
+            controller: _contactInfoController,
+            decoration: InputDecoration(labelText: 'Contact Info'),
+          ),
+          TextFormField(
+            controller: _specialRequestController,
+            decoration: InputDecoration(labelText: 'Special Request'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            onEdit(
+              _nameController.text,
+              _dateController.text,
+              _timeController.text,
+              _guestsController.text,
+              _contactInfoController.text,
+              _specialRequestController.text,
+            );
+            Navigator.of(context).pop();
+          },
+          child: Text('Save Changes'),
+        ),
+      ],
     );
   }
 }
