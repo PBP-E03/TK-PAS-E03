@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:steve_mobile/auth/screens/login.dart';
 import 'package:steve_mobile/resto/screens/resto_list.dart';
+import 'package:steve_mobile/wishlist/screens/wishlist_page.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -21,7 +22,7 @@ class LeftDrawer extends StatelessWidget {
               child: const Column(
                 children: [
                   Text(
-                    'Shippy E-Commerce App',
+                    'Steve Restaurants',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -31,7 +32,7 @@ class LeftDrawer extends StatelessWidget {
                   ),
                   Padding(padding: EdgeInsets.all(8)),
                   Text(
-                    "Ayo habisi duitmu di Shippy!",
+                    "Find Your Favorite Restaurants",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.normal,
@@ -49,6 +50,15 @@ class LeftDrawer extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const RestoListPage()));
+              }),
+          ListTile(
+              leading: const Icon(Icons.bookmark_outline),
+              title: const Text('Wishlist'),
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WishlistPage()));
               }),
           ListTile(
             leading: const Icon(Icons.logout),
