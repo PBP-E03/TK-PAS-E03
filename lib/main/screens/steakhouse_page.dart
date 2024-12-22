@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'package:steve_mobile/review/screens/review_page.dart';
 
+// Pages
+import 'package:steve_mobile/reservasion/screens/reservation_screens.dart';
+
 class SteakhousePage extends StatelessWidget {
   final RestaurantEntry restaurant;
 
@@ -54,8 +57,7 @@ class SteakhousePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            ReservationFormPage(restaurantId: restaurant.pk),
+                        builder: (context) => ReservationPage(),
                       ),
                     );
                   },
@@ -70,20 +72,20 @@ class SteakhousePage extends StatelessWidget {
   }
 }
 
-class ReservationFormPage extends StatelessWidget {
-  final int restaurantId;
+// class ReservationFormPage extends StatelessWidget {
+//   final int restaurantId;
 
-  const ReservationFormPage({super.key, required this.restaurantId});
+//   const ReservationFormPage({super.key, required this.restaurantId});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Reservation Form"),
-      ),
-      body: Center(
-        child: Text("Reservation form for restaurant ID: $restaurantId"),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Reservation Form"),
+//       ),
+//       body: Center(
+//         child: Text("Reservation form for restaurant ID: $restaurantId"),
+//       ),
+//     );
+//   }
+// }

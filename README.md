@@ -126,3 +126,7 @@ samples, guidance on mobile development, and a full API reference.
   - Proyek Tengah Semester (PTS): [GitHub PTS](https://github.com/PBP-E03/TK1-PBP)
 
 ---
+
+## **Tautan Deploy**
+
+[Instalasi Aplikasi](https://appcenter.ms/download?url=%2Fv0.1%2Fapps%2FPBP-E03%2FSteve-Mobile%2Fbuilds%2F3%2Fdownloads%2Fbuild)

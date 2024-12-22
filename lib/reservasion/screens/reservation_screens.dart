@@ -16,7 +16,8 @@ class _ReservationPageState extends State<ReservationPage> {
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _guestsController = TextEditingController();
   final TextEditingController _contactInfoController = TextEditingController();
-  final TextEditingController _specialRequestController = TextEditingController();
+  final TextEditingController _specialRequestController =
+      TextEditingController();
 
   List<Map<String, String>> reservations = [];
   int? _editingIndex;
@@ -95,7 +96,8 @@ class _ReservationPageState extends State<ReservationPage> {
       if (hasActiveReservation && _editingIndex == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("You already have an active reservation! Please complete it first."),
+            content: Text(
+                "You already have an active reservation! Please complete it first."),
             backgroundColor: Colors.red,
           ),
         );
@@ -131,7 +133,8 @@ class _ReservationPageState extends State<ReservationPage> {
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text("You can only have one active reservation at a time."),
+                content:
+                    Text("You can only have one active reservation at a time."),
                 backgroundColor: Colors.red,
               ),
             );
@@ -143,7 +146,9 @@ class _ReservationPageState extends State<ReservationPage> {
       _clearForm();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(_editingIndex == null ? "Reservation saved successfully!" : "Reservation updated successfully!"),
+          content: Text(_editingIndex == null
+              ? "Reservation saved successfully!"
+              : "Reservation updated successfully!"),
           backgroundColor: Colors.green,
         ),
       );
@@ -176,12 +181,11 @@ class _ReservationPageState extends State<ReservationPage> {
     );
   }
 
-  
   void _deleteReservation(int index) {
     setState(() {
       reservations.removeAt(index);
     });
-    _saveReservations(); 
+    _saveReservations();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Reservation deleted!"),
@@ -190,13 +194,18 @@ class _ReservationPageState extends State<ReservationPage> {
     );
   }
 
-  Future<void> _editReservation(int reservationId, String editedName,
-      String editedDate, String editedTime, int editedGuests,
-      String editedContactInfo, String editedSpecialRequest) async {
+  Future<void> _editReservation(
+      int reservationId,
+      String editedName,
+      String editedDate,
+      String editedTime,
+      int editedGuests,
+      String editedContactInfo,
+      String editedSpecialRequest) async {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.postJson(
-        "http://127.0.0.1:8000/reservation/edit-flutter/",
+        "https://danniel-steve.pbp.cs.ui.ac.id/reservation/edit-flutter/",
         jsonEncode({
           'reservation_id': reservationId.toString(),
           'name': editedName,
@@ -210,8 +219,7 @@ class _ReservationPageState extends State<ReservationPage> {
 
       if (response['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Reservation updated!"))
-        );
+            const SnackBar(content: Text("Reservation updated!")));
         final updatedReservations = await fetchReservations();
 
         setState(() {
@@ -219,14 +227,12 @@ class _ReservationPageState extends State<ReservationPage> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Failed to update reservation."))
-        );
+            const SnackBar(content: Text("Failed to update reservation.")));
       }
     } catch (e) {
       // Handle error if the request fails
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e"))
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
 
@@ -241,11 +247,10 @@ class _ReservationPageState extends State<ReservationPage> {
           initialGuests: reservation["guests"]!,
           initialContactInfo: reservation["contactInfo"]!,
           initialSpecialRequest: reservation["specialRequest"]!,
-          onEdit: (name, date, time, guests, contactInfo, specialRequest) async {
-            await _editReservation(
-              int.parse(reservation["id"]!), name, date, time, int.parse(guests),
-              contactInfo, specialRequest
-            );
+          onEdit:
+              (name, date, time, guests, contactInfo, specialRequest) async {
+            await _editReservation(int.parse(reservation["id"]!), name, date,
+                time, int.parse(guests), contactInfo, specialRequest);
           },
         );
       },
@@ -266,7 +271,7 @@ class _ReservationPageState extends State<ReservationPage> {
   @override
   void initState() {
     super.initState();
-    _loadReservations(); 
+    _loadReservations();
   }
 
   @override
@@ -389,7 +394,8 @@ class _ReservationPageState extends State<ReservationPage> {
                   return Card(
                     child: ListTile(
                       title: Text(reservation["name"]!),
-                      subtitle: Text("Date: ${reservation["date"]}, Time: ${reservation["time"]}"),
+                      subtitle: Text(
+                          "Date: ${reservation["date"]}, Time: ${reservation["time"]}"),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -404,7 +410,8 @@ class _ReservationPageState extends State<ReservationPage> {
                           ),
                         ],
                       ),
-                      onTap: () => _showEditReservationDialog(index, reservation),
+                      onTap: () =>
+                          _showEditReservationDialog(index, reservation),
                     ),
                   );
                 },
@@ -438,12 +445,18 @@ class EditReservationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _nameController = TextEditingController(text: initialName);
-    final TextEditingController _dateController = TextEditingController(text: initialDate);
-    final TextEditingController _timeController = TextEditingController(text: initialTime);
-    final TextEditingController _guestsController = TextEditingController(text: initialGuests);
-    final TextEditingController _contactInfoController = TextEditingController(text: initialContactInfo);
-    final TextEditingController _specialRequestController = TextEditingController(text: initialSpecialRequest);
+    final TextEditingController _nameController =
+        TextEditingController(text: initialName);
+    final TextEditingController _dateController =
+        TextEditingController(text: initialDate);
+    final TextEditingController _timeController =
+        TextEditingController(text: initialTime);
+    final TextEditingController _guestsController =
+        TextEditingController(text: initialGuests);
+    final TextEditingController _contactInfoController =
+        TextEditingController(text: initialContactInfo);
+    final TextEditingController _specialRequestController =
+        TextEditingController(text: initialSpecialRequest);
 
     return AlertDialog(
       title: Text('Edit Reservation'),
