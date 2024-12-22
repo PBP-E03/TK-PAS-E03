@@ -264,7 +264,12 @@ class _WishlistPageState extends State<WishlistPage> {
       if (response['message'] == 'Category deleted successfully') {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Category deleted!")));
-        setState(() {});
+
+        // Navigate to the unfiltered view
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const WishlistPage()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Failed to delete category.")));
