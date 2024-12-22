@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:steve_mobile/widgets/leftdrawer.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-// import 'package:steve_mobile/resto/models/restaurant_entry.dart';
 import 'dart:convert';
 
 class RestoEntryFormPage extends StatefulWidget {
-  const RestoEntryFormPage({super.key});
+  const RestoEntryFormPage({super.key, this.onCreateAction});
+  final VoidCallback? onCreateAction;
 
   @override
-  _RestoEntryFormPageState createState() => _RestoEntryFormPageState();
+  State<RestoEntryFormPage> createState() => _RestoEntryFormPageState();
+  // _RestoEntryFormPageState createState() => _RestoEntryFormPageState();
 }
 
 class _RestoEntryFormPageState extends State<RestoEntryFormPage> {
@@ -53,7 +54,10 @@ class _RestoEntryFormPageState extends State<RestoEntryFormPage> {
   }
 
   // Custom input decoration
-  InputDecoration _buildInputDecoration(String label, String hint) {
+  InputDecoration _buildInputDecoration(
+    String label,
+    String hint,
+  ) {
     return InputDecoration(
       labelText: label,
       hintText: hint,
@@ -198,7 +202,7 @@ class _RestoEntryFormPageState extends State<RestoEntryFormPage> {
                   if (_formKey.currentState!.validate()) {
                     // Handle form submission here
                     final response = await request.postJson(
-                      "http://127.0.0.1:8000/resto/flutter/create-resto/",
+                      "https://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/create-resto/",
                       jsonEncode(<String, String>{
                         'name': _name,
                         'address': _address,
@@ -220,6 +224,7 @@ class _RestoEntryFormPageState extends State<RestoEntryFormPage> {
                             backgroundColor: Colors.green,
                           ),
                         );
+                        widget.onCreateAction!();
                         Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
