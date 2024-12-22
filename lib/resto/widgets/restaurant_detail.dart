@@ -26,8 +26,8 @@ class _RestaurantDetailDialogState extends State<RestaurantDetailDialog> {
   static const primaryColor = Color(0xFFDC1E2D);
 
   Future<void> fetchCategories(CookieRequest request) async {
-    final response = await request
-        .get("http://127.0.0.1:8000/wishlist/fetch-user-categories/");
+    final response = await request.get(
+        "http://danniel-steve.pbp.cs.ui.ac.id/wishlist/fetch-user-categories/");
     final List<dynamic> data = response;
     if (mounted) {
       setState(() {
@@ -104,7 +104,7 @@ class _RestaurantDetailDialogState extends State<RestaurantDetailDialog> {
 
                     try {
                       final response = await request.postJson(
-                          "http://127.0.0.1:8000/wishlist/add-flutter/",
+                          "http://danniel-steve.pbp.cs.ui.ac.id/wishlist/add-flutter/",
                           jsonEncode(<String, String?>{
                             'restaurant_id': widget.restaurant.pk.toString(),
                             'title': title,
