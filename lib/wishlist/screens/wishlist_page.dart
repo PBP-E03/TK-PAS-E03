@@ -229,7 +229,7 @@ class _WishlistPageState extends State<WishlistPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.postJson(
-        "http://127.0.0.1:8000/wishlist/delete-flutter/",
+        "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/delete-flutter/",
         jsonEncode({'wishlist_id': itemId.toString()}),
       );
       if (response['status'] == 'success') {
@@ -258,7 +258,7 @@ class _WishlistPageState extends State<WishlistPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.postJson(
-        "http://127.0.0.1:8000/wishlist/delete-category-flutter/",
+        "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/delete-category-flutter/",
         jsonEncode({'category_id': categoryId.toString()}),
       );
       if (response['message'] == 'Category deleted successfully') {
@@ -285,7 +285,7 @@ class _WishlistPageState extends State<WishlistPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.postJson(
-        "http://127.0.0.1:8000/wishlist/edit-flutter/",
+        "https://danniel-steve.pbp.cs.ui.ac.id/wishlist/edit-flutter/",
         jsonEncode(<String, String?>{
           'wishlist_id': itemId.toString(),
           'title': editedTitle,

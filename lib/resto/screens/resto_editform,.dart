@@ -218,7 +218,7 @@ class _RestoEditEntryFormPageState extends State<RestoEditEntryFormPage> {
                         if (_formKey.currentState!.validate()) {
                           // Handle form submission here
                           final response = await request.postJson(
-                            "http://127.0.0.1:8000/resto/flutter/edit-resto/",
+                            "https://danniel-steve.pbp.cs.ui.ac.id/flutter/edit-resto/",
                             jsonEncode(<String, String>{
                               'id': widget.restaurant.pk.toString(),
                               'name': _name,

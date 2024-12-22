@@ -11,7 +11,7 @@ class ReviewsPage extends StatefulWidget {
   const ReviewsPage({super.key, required this.restaurantId});
 
   @override
-  _ReviewsPageState createState() => _ReviewsPageState();
+  State<ReviewsPage> createState() => _ReviewsPageState();
 }
 
 class _ReviewsPageState extends State<ReviewsPage> {
@@ -30,7 +30,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/rating/flutter/get_rating/${widget.restaurantId}/'),
+        Uri.parse(
+            'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/get_rating/${widget.restaurantId}/'),
       );
 
       if (response.statusCode == 200) {
@@ -38,7 +39,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
         setState(() {
           reviews = data.map((review) => RatingEntry.fromJson(review)).toList();
           // Check if the logged-in user has already reviewed this restaurant
-          userHasReviewed = reviews.any((review) => review.fields.user.toString() == request.cookies['user_id']);
+          userHasReviewed = reviews.any((review) =>
+              review.fields.user.toString() == request.cookies['user_id']);
           isLoading = false;
         });
       } else {
@@ -87,7 +89,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
                               children: [
                                 Text("Rating: ${review.fields.rating}"),
                                 Text("Comment: ${review.fields.comment}"),
-                                Text("Date: ${formatDate(review.fields.createdAt)}"),
+                                Text(
+                                    "Date: ${formatDate(review.fields.createdAt)}"),
                               ],
                             ),
                             trailing: Row(
@@ -121,7 +124,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
                               _showAddDialog(context, request);
                             },
                       child: userHasReviewed
-                          ? const Text("You have already reviewed this restaurant")
+                          ? const Text(
+                              "You have already reviewed this restaurant")
                           : const Text("Add Review"),
                     ),
                   ),
@@ -169,7 +173,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   _addReview(textController.text, rating, request);
                   Navigator.of(context).pop();
                 } else {
-                  _showErrorDialog(context, 'Please enter a valid rating (0-5).');
+                  _showErrorDialog(
+                      context, 'Please enter a valid rating (0-5).');
                 }
               },
               child: const Text("Add"),
@@ -181,7 +186,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
   }
 
   // Add review function
-  Future<void> _addReview(String comment, int rating, CookieRequest request) async {
+  Future<void> _addReview(
+      String comment, int rating, CookieRequest request) async {
     final payload = {
       "restaurant": widget.restaurantId,
       "rating": rating,
@@ -189,7 +195,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
     };
 
     final response = await request.postJson(
-      'http://127.0.0.1:8000/rating/flutter/add_review/${widget.restaurantId}/',
+      'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/add_review/${widget.restaurantId}/',
       json.encode(payload),
     );
 
@@ -199,12 +205,14 @@ class _ReviewsPageState extends State<ReviewsPage> {
         fetchReviews(); // Refresh the reviews list
       });
     } else {
-      _showErrorDialog(context, 'Failed to add review: ${response['error'] ?? 'Unknown error'}');
+      _showErrorDialog(context,
+          'Failed to add review: ${response['error'] ?? 'Unknown error'}');
     }
   }
 
   // Edit review dialog
-  void _showEditDialog(BuildContext context, RatingEntry review, CookieRequest request) {
+  void _showEditDialog(
+      BuildContext context, RatingEntry review, CookieRequest request) {
     final TextEditingController textController =
         TextEditingController(text: review.fields.comment);
     final TextEditingController ratingController =
@@ -243,7 +251,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   _editReview(review.pk, textController.text, rating, request);
                   Navigator.of(context).pop();
                 } else {
-                  _showErrorDialog(context, 'Please enter a valid rating (0-5).');
+                  _showErrorDialog(
+                      context, 'Please enter a valid rating (0-5).');
                 }
               },
               child: const Text("Update"),
@@ -255,9 +264,10 @@ class _ReviewsPageState extends State<ReviewsPage> {
   }
 
   // Edit review API call
-  Future<void> _editReview(int reviewId, String comment, int rating, CookieRequest request) async {
+  Future<void> _editReview(
+      int reviewId, String comment, int rating, CookieRequest request) async {
     final response = await request.postJson(
-      'http://127.0.0.1:8000/rating/flutter/edit_review/$reviewId/',
+      'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/edit_review/$reviewId/',
       json.encode({
         "rating": rating,
         "comment": comment,
@@ -270,14 +280,15 @@ class _ReviewsPageState extends State<ReviewsPage> {
         fetchReviews(); // Refresh the reviews list
       });
     } else {
-      _showErrorDialog(context, 'Failed to edit review: ${response['error'] ?? 'Unknown error'}');
+      _showErrorDialog(context,
+          'Failed to edit review: ${response['error'] ?? 'Unknown error'}');
     }
   }
 
   // Delete review function
   Future<void> _deleteReview(int reviewId, CookieRequest request) async {
     final response = await request.postJson(
-      'http://127.0.0.1:8000/rating/flutter/delete_review/$reviewId/',
+      'https://danniel-steve.pbp.cs.ui.ac.id/rating/flutter/delete_review/$reviewId/',
       json.encode({}),
     );
 
@@ -287,7 +298,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
         fetchReviews(); // Refresh the reviews list
       });
     } else {
-      _showErrorDialog(context, 'Failed to delete review: ${response['error'] ?? 'Unknown error'}');
+      _showErrorDialog(context,
+          'Failed to delete review: ${response['error'] ?? 'Unknown error'}');
     }
   }
 
@@ -295,7 +307,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
   void _showErrorDialog(BuildContext context, String errorMessage) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevents closing the dialog by tapping outside
+      barrierDismissible:
+          false, // Prevents closing the dialog by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Error'),
