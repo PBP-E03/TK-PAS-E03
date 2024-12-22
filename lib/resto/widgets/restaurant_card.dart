@@ -191,3 +191,4 @@ class RestaurantCard extends StatelessWidget {
     );
   }
 }
+
