@@ -12,7 +12,7 @@ class RestoEditEntryFormPage extends StatefulWidget {
   final VoidCallback? onEditComplete;
 
   @override
-  _RestoEditEntryFormPageState createState() => _RestoEditEntryFormPageState();
+  State<RestoEditEntryFormPage> createState() => _RestoEditEntryFormPageState();
 }
 
 class _RestoEditEntryFormPageState extends State<RestoEditEntryFormPage> {
@@ -217,8 +217,8 @@ class _RestoEditEntryFormPageState extends State<RestoEditEntryFormPage> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           // Handle form submission here
-                          final response = await request.postJson(
-                            "http://danniel-steve.pbp.cs.ui.ac.id/flutter/edit-resto/",
+                          final response = await request.post(
+                            "https://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/edit-resto/",
                             jsonEncode(<String, String>{
                               'id': widget.restaurant.pk.toString(),
                               'name': _name,
@@ -232,7 +232,7 @@ class _RestoEditEntryFormPageState extends State<RestoEditEntryFormPage> {
                                   '${_closeTime.hour.toString().padLeft(2, '0')}:${_closeTime.minute.toString().padLeft(2, '0')}:00.000000',
                             }),
                           );
-
+                          // print(response);
                           if (context.mounted) {
                             if (response['status'] == 'success') {
                               ScaffoldMessenger.of(context).showSnackBar(
