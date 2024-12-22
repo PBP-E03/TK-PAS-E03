@@ -52,7 +52,7 @@ class LeftDrawer extends StatelessWidget {
                         builder: (context) => const RestoListPage()));
               }),
           ListTile(
-              leading: const Icon(Icons.favorite_border),
+              leading: const Icon(Icons.bookmark),
               title: const Text('Wishlist'),
               onTap: () {
                 Navigator.pushReplacement(

@@ -7,14 +7,14 @@ class WishlistItemCard extends StatelessWidget {
   final WishlistItem item;
   final RestaurantEntry restaurant;
   final VoidCallback onDeletePressed;
-  final VoidCallback onEditPressed; // Add this line
+  final VoidCallback onEditPressed;
 
   const WishlistItemCard({
     Key? key,
     required this.item,
     required this.restaurant,
     required this.onDeletePressed,
-    required this.onEditPressed, // Add this line
+    required this.onEditPressed,
   }) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class WishlistItemCard extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.edit),
-              onPressed: onEditPressed, // Use the edit callback
+              onPressed: onEditPressed,
             ),
             IconButton(
               icon: const Icon(Icons.delete),

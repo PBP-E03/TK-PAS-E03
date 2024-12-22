@@ -90,7 +90,7 @@ class _WishlistPageState extends State<WishlistPage> {
                     child: ListView(
                       children: selectedCategory == null
                           ? _buildCategories(wishlistProduct)
-                          : _buildFilteredItems(filteredItems),
+                          : _buildFilteredItems(filteredItems, wishlistProduct),
                     ),
                   ),
                 ],
@@ -131,24 +131,48 @@ class _WishlistPageState extends State<WishlistPage> {
     }).toList();
   }
 
-  List<Widget> _buildFilteredItems(List<WishlistItem> filteredItems) {
-    return filteredItems.map((item) {
-      final restaurant = restaurantEntries.firstWhere(
-        (entry) => entry.pk == item.fields.restaurant,
-        orElse: () => throw Exception('Restaurant not found'),
+  List<Widget> _buildFilteredItems(
+      List<WishlistItem> filteredItems, WishlistProduct wishlistProduct) {
+    Map<int, List<WishlistItem>> groupedByCategory = {};
+
+    // Group items by category
+    for (var item in filteredItems) {
+      final categoryId = item.fields.wishlistCategory;
+      groupedByCategory.putIfAbsent(categoryId, () => []).add(item);
+    }
+
+    // Build widgets for each category
+    return groupedByCategory.entries.expand((entry) {
+      final categoryId = entry.key;
+      final items = entry.value;
+
+      // Find the category details
+      final category = wishlistProduct.wishlistCategories.firstWhere(
+        (cat) => cat.pk == categoryId,
+        orElse: () => throw Exception('Category not found'),
       );
 
-      return WishlistItemCard(
-        item: item,
-        restaurant: restaurant,
-        onDeletePressed: () {
-          _showDeleteConfirmationDialog(item);
-        },
-        onEditPressed: () {
-          _showEditDialog(item,
-              context.read<WishlistProduct>()); // Call the edit dialog here
-        },
-      );
+      // Build header and item cards for this category
+      return [
+        _buildCategoryHeader(category),
+        ...items.map((item) {
+          final restaurant = restaurantEntries.firstWhere(
+            (entry) => entry.pk == item.fields.restaurant,
+            orElse: () => throw Exception('Restaurant not found'),
+          );
+
+          return WishlistItemCard(
+            item: item,
+            restaurant: restaurant,
+            onDeletePressed: () {
+              _showDeleteConfirmationDialog(item);
+            },
+            onEditPressed: () {
+              _showEditDialog(item, wishlistProduct);
+            },
+          );
+        }).toList(),
+      ];
     }).toList();
   }
 

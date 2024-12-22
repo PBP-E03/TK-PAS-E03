@@ -25,7 +25,7 @@ class _EditWishlistDialogState extends State<EditWishlistDialog> {
   String? newCategoryName;
   bool showNewCategoryField = false;
 
-  late TextEditingController titleController; // Declare it once here
+  late TextEditingController titleController;
   late TextEditingController newCategoryController;
 
   @override
@@ -33,15 +33,13 @@ class _EditWishlistDialogState extends State<EditWishlistDialog> {
     super.initState();
     title = widget.initialTitle;
     category = widget.initialCategory;
-    titleController =
-        TextEditingController(text: title); // Initialize with initial value
-    newCategoryController =
-        TextEditingController(); // Initialize for new category field
+    titleController = TextEditingController(text: title);
+    newCategoryController = TextEditingController();
   }
 
   @override
   void dispose() {
-    titleController.dispose(); // Dispose controllers when widget is destroyed
+    titleController.dispose();
     newCategoryController.dispose();
     super.dispose();
   }
@@ -55,7 +53,7 @@ class _EditWishlistDialogState extends State<EditWishlistDialog> {
         children: [
           // Text input for title
           TextField(
-            controller: titleController, // Use the initialized controller
+            controller: titleController,
             decoration: const InputDecoration(
               labelText: 'Title',
               border: OutlineInputBorder(),
