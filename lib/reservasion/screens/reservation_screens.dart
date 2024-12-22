@@ -35,7 +35,6 @@ class _ReservationPageState extends State<ReservationPage> {
     }
   }
 
-  // Save reservations to SharedPreferences
   Future<void> _saveReservations() async {
     final prefs = await SharedPreferences.getInstance();
     final String reservationsJson = json.encode(reservations);
@@ -86,7 +85,6 @@ class _ReservationPageState extends State<ReservationPage> {
 
       setState(() {
         if (_editingIndex != null) {
-          // Update existing reservation
           reservations[_editingIndex!] = {
             "name": _nameController.text,
             "date": _dateController.text,

@@ -51,7 +51,6 @@ class ReservationCard extends StatelessWidget {
           ],
         ),
         onTap: () {
-          // Optional: You could navigate to a detailed reservation page
           Navigator.push(
             context,
             MaterialPageRoute(
