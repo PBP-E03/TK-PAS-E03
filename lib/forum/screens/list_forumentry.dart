@@ -16,8 +16,8 @@ class ListForumEntry extends StatefulWidget {
 class _ListForumEntryState extends State<ListForumEntry> {
   Future<List<ForumEntry>> fetchForum(CookieRequest request) async {
     try {
-      final response =
-          await request.get('http://localhost:8000/forum/post/get-all/');
+      final response = await request
+          .get('https://danniel-steve.pbp.cs.ui.ac.id/forum/post/get-all/');
 
       // Pastikan response adalah List
       if (response is List) {
@@ -41,7 +41,7 @@ class _ListForumEntryState extends State<ListForumEntry> {
   Future<String> fetchUser(int id) async {
     final request = context.read<CookieRequest>();
     final response = await request.get(
-      'http://127.0.0.1:8000/forum/get-username/$id',
+      'https://danniel-steve.pbp.cs.ui.ac.id/forum/get-username/$id',
     );
 
     return response["username"];
@@ -50,7 +50,7 @@ class _ListForumEntryState extends State<ListForumEntry> {
   Future<String> fetchResto(int id) async {
     final request = context.read<CookieRequest>();
     final response = await request.get(
-      'http://127.0.0.1:8000/forum/get-resto/$id',
+      'https://danniel-steve.pbp.cs.ui.ac.id/forum/get-resto/$id',
     );
 
     return response["name"];

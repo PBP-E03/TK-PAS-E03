@@ -41,7 +41,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   Future<String> fetchUser(int id) async {
     final request = context.read<CookieRequest>();
     final response = await request.get(
-      'http://127.0.0.1:8000/forum/get-username/$id',
+      'https://danniel-steve.pbp.cs.ui.ac.id/forum/get-username/$id',
     );
 
     return response["username"];
@@ -50,7 +50,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   Future<void> fetchComments() async {
     final request = context.read<CookieRequest>();
     final response = await request.get(
-      'http://127.0.0.1:8000/forum/post/${widget.forum.pk}/comments/',
+      'https://danniel-steve.pbp.cs.ui.ac.id/forum/post/${widget.forum.pk}/comments/',
     );
     setState(() {
       comments = response;
@@ -60,7 +60,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   Future<void> fetchForum() async {
     final request = context.read<CookieRequest>();
     final response = await request.get(
-      'http://127.0.0.1:8000/forum/post/get-${widget.forum.pk}/',
+      'https://danniel-steve.pbp.cs.ui.ac.id/forum/post/get-${widget.forum.pk}/',
     );
     setState(() {
       for (var d in response) {
@@ -121,8 +121,8 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     try {
       final response = await request.post(
         isUpvote
-            ? 'http://127.0.0.1:8000/forum/upvote/${forumState!.pk}/'
-            : 'http://127.0.0.1:8000/forum/downvote/${forumState!.pk}/',
+            ? 'https://danniel-steve.pbp.cs.ui.ac.id/forum/upvote/${forumState!.pk}/'
+            : 'https://danniel-steve.pbp.cs.ui.ac.id/forum/downvote/${forumState!.pk}/',
         {},
       );
 
@@ -158,7 +158,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   void deletePost(CookieRequest request) async {
     try {
       final response = await request.post(
-        'http://127.0.0.1:8000/forum/post/${forumState!.pk}/delete/',
+        'https://danniel-steve.pbp.cs.ui.ac.id/forum/post/${forumState!.pk}/delete/',
         {},
       );
 
@@ -188,7 +188,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.post(
-        'http://127.0.0.1:8000/forum/comment/$commentId/delete/',
+        'https://danniel-steve.pbp.cs.ui.ac.id/forum/comment/$commentId/delete/',
         {},
       );
 
@@ -244,7 +244,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
           onPressed: () async {
             if (_commentController.text.isNotEmpty) {
               final response = await request.postJson(
-                  "http://127.0.0.1:8000/forum/post/new-comment/",
+                  "https://danniel-steve.pbp.cs.ui.ac.id/forum/post/new-comment/",
                   jsonEncode({
                     'post_id': forumState!.pk.toString(),
                     'content': _commentController.text,

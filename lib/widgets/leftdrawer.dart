@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-
+import 'package:hugeicons/hugeicons.dart';
 import 'package:steve_mobile/auth/screens/login.dart';
 import 'package:steve_mobile/resto/screens/resto_list.dart';
 import 'package:steve_mobile/wishlist/screens/wishlist_page.dart';
+
+import 'package:steve_mobile/forum/screens/list_forumentry.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -52,13 +54,17 @@ class LeftDrawer extends StatelessWidget {
                         builder: (context) => const RestoListPage()));
               }),
           ListTile(
-              leading: const Icon(Icons.bookmark_outline),
-              title: const Text('Wishlist'),
+              leading: const HugeIcon(
+                icon: HugeIcons.strokeRoundedBubbleChat,
+                color: Colors.black,
+                size: 24.0,
+              ),
+              title: const Text('Forum Diskusi'),
               onTap: () {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const WishlistPage()));
+                        builder: (context) => const ListForumEntry()));
               }),
           ListTile(
               leading: const Icon(Icons.bookmark_outline),

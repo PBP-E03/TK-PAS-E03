@@ -106,7 +106,7 @@ class _EditForumPageState extends State<EditForumPage> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final response = await request.postJson(
-                      "http://127.0.0.1:8000/forum/post/${widget.forum.pk}/edit/",
+                      "https://danniel-steve.pbp.cs.ui.ac.id/forum/post/${widget.forum.pk}/edit/",
                       jsonEncode({
                         'forum_id': widget.forum.pk,
                         'title': _titleController.text,

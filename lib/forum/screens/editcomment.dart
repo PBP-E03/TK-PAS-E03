@@ -83,7 +83,7 @@ class _EditCommentPageState extends State<EditCommentPage> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final response = await request.postJson(
-                      "http://localhost:8000/forum/edit-comment/",
+                      "https://danniel-steve.pbp.cs.ui.ac.id/forum/edit-comment/",
                       jsonEncode({
                         'comment_id': widget.commentId,
                         'content': _contentController.text,

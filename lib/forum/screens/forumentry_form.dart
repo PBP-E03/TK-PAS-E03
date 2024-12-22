@@ -30,8 +30,8 @@ class _ForumEntryFormPageState extends State<ForumEntryFormPage> {
 
   Future<void> fetchRestaurants() async {
     final request = context.read<CookieRequest>();
-    final response = await request
-        .get('http://127.0.0.1:8000/resto/flutter/get-restaurants/');
+    final response = await request.get(
+        'https://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/get-restaurants/');
 
     setState(() {
       restaurantList = List<String>.from(
@@ -158,7 +158,7 @@ class _ForumEntryFormPageState extends State<ForumEntryFormPage> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         final response = await request.postJson(
-                          "http://127.0.0.1:8000/forum/post/new-flutter/",
+                          "https://danniel-steve.pbp.cs.ui.ac.id/forum/post/new-flutter/",
                           jsonEncode(<String, dynamic>{
                             'restaurant': _selectedRestaurant,
                             'title': _title,
