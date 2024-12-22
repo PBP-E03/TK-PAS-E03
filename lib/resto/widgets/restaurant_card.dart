@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:steve_mobile/resto/models/restaurant_entry.dart';
-import 'package:steve_mobile/reservasion/widgets/reservation_page.dart';
+import 'package:steve_mobile/reservasion/screens/reservation_screens.dart';
 
 // Provider
 import 'package:provider/provider.dart';

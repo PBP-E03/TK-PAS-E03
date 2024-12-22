@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class ReservationPage extends StatefulWidget {
   @override
@@ -17,9 +19,27 @@ class _ReservationPageState extends State<ReservationPage> {
   List<Map<String, String>> reservations = [];
   int? _editingIndex;
 
-  // Function to check if there is an active reservation
   bool get hasActiveReservation {
     return reservations.any((reservation) => reservation["status"] == "active");
+  }
+
+  Future<void> _loadReservations() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? savedReservations = prefs.getString('reservations');
+    if (savedReservations != null) {
+      final List<dynamic> reservationList = json.decode(savedReservations);
+      setState(() {
+        reservations = List<Map<String, String>>.from(
+            reservationList.map((item) => Map<String, String>.from(item)));
+      });
+    }
+  }
+
+  // Save reservations to SharedPreferences
+  Future<void> _saveReservations() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String reservationsJson = json.encode(reservations);
+    prefs.setString('reservations', reservationsJson);
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -55,7 +75,6 @@ class _ReservationPageState extends State<ReservationPage> {
   void _saveReservation() {
     if (_formKey.currentState!.validate()) {
       if (hasActiveReservation && _editingIndex == null) {
-        // If there's an active reservation, show a warning message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("You already have an active reservation! Please complete it first."),
@@ -67,7 +86,7 @@ class _ReservationPageState extends State<ReservationPage> {
 
       setState(() {
         if (_editingIndex != null) {
-          // If we're editing an existing reservation, update it
+          // Update existing reservation
           reservations[_editingIndex!] = {
             "name": _nameController.text,
             "date": _dateController.text,
@@ -75,22 +94,35 @@ class _ReservationPageState extends State<ReservationPage> {
             "guests": _guestsController.text,
             "contactInfo": _contactInfoController.text,
             "specialRequest": _specialRequestController.text,
-            "status": "active", // Keep the status as active for editing
+            "status": "active",
+            "user": "user_id_here",
+            "restaurant": "restaurant_id_here",
           };
         } else {
-          // Otherwise, add a new reservation
-          reservations.add({
-            "name": _nameController.text,
-            "date": _dateController.text,
-            "time": _timeController.text,
-            "guests": _guestsController.text,
-            "contactInfo": _contactInfoController.text,
-            "specialRequest": _specialRequestController.text,
-            "status": "active", // New reservation is active
-          });
+          if (!hasActiveReservation) {
+            reservations.add({
+              "name": _nameController.text,
+              "date": _dateController.text,
+              "time": _timeController.text,
+              "guests": _guestsController.text,
+              "contactInfo": _contactInfoController.text,
+              "specialRequest": _specialRequestController.text,
+              "status": "active",
+              "user": "user_id_here",
+              "restaurant": "restaurant_id_here",
+            });
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("You can only have one active reservation at a time."),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         }
       });
 
+      _saveReservations();
       _clearForm();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -115,11 +147,13 @@ class _ReservationPageState extends State<ReservationPage> {
 
   void _completeReservation(int index) {
     setState(() {
-      reservations[index]["status"] = "completed"; // Change the status to 'completed'
+      reservations[index]["status"] = "completed";
+      reservations.removeAt(index);
     });
+    _saveReservations();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("Reservation completed!"),
+        content: Text("Reservation completed and deleted!"),
         backgroundColor: Colors.blue,
       ),
     );
@@ -129,6 +163,7 @@ class _ReservationPageState extends State<ReservationPage> {
     setState(() {
       reservations.removeAt(index);
     });
+    _saveReservations(); 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Reservation deleted!"),
@@ -159,6 +194,12 @@ class _ReservationPageState extends State<ReservationPage> {
     _contactInfoController.dispose();
     _specialRequestController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReservations(); 
   }
 
   @override
