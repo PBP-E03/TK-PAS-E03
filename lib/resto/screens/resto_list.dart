@@ -26,7 +26,7 @@ class _RestoListPageState extends State<RestoListPage> {
 
   Future<List<RestaurantEntry>> fetchRestaurant(CookieRequest request) async {
     final response = await request.get(
-        'http://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/get-restaurants/');
+        'https://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/get-restaurants/');
     var data = response;
     List<RestaurantEntry> listRestaurant = [];
     for (var d in data) {
@@ -110,8 +110,8 @@ class _RestoListPageState extends State<RestoListPage> {
                 ),
               ),
               onPressed: () async {
-                final response = await request.postJson(
-                    'http://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/delete-resto/',
+                final response = await request.post(
+                    'https://danniel-steve.pbp.cs.ui.ac.id/resto/flutter/delete-resto/',
                     jsonEncode(<String, int>{
                       'id': restaurant.pk,
                     }));
